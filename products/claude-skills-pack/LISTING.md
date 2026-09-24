@@ -65,3 +65,8 @@ claude-code, claude, ai-coding, developer-tools, freelance, productivity, git, c
 - [ ] Upload `products/claude-skills-pack.zip`
 - [ ] Cover image: use the 3 cover lines on a plain dark background
 - [ ] Test-install the zip in a clean `~/.claude/skills/`
+
+## Payment option: USDC on Base
+Buyers can also pay directly in USDC on the **Base** network to:
+`0xA973f9F3D582189D5941e09cB4d198ca1e8E99cA`
+Only USDC on Base (token contract `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`) is accepted. Funds sent on another network or in another token cannot be recovered. After paying, the buyer sends the tx hash to the seller contact (TODO-OWNER) and receives the zip.

@@ -61,6 +61,10 @@
   li { margin-bottom: 6px; }
   details { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; }
   summary { cursor: pointer; font-weight: 600; }
+  .pay { max-width: 560px; display: grid; gap: 10px; }
+  .pay p { margin: 0; }
+  .addr { font: 14px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; word-break: break-all; user-select: all; }
+  .pay .btn { justify-self: start; }
   footer { padding: 32px 0 48px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border); }
 </style>
 </head>
@@ -75,9 +79,13 @@
     <strong>$29 flat</strong>
     <span>24h delivery &middot; 1 revision included</span>
   </div>
-  <!-- TODO-OWNER: replace href="#" with the owner's real checkout link (e.g. Ko-fi commission, Payhip, Gumroad, PayPal invoice) and remove aria-disabled. -->
-  <a class="btn" href="#" aria-disabled="true" data-todo="TODO-OWNER" onclick="return false;">Order a rewrite &mdash; $29</a>
-  <p class="todo">TODO-OWNER: checkout not connected yet. No payment can be taken on this page.</p>
+  <div class="pay card" id="pay">
+    <h3>Pay 29 USDC on Base</h3>
+    <p>Send exactly <strong>29 USDC</strong> on the <strong>Base</strong> network to:</p>
+    <code class="addr" id="addr">0xA973f9F3D582189D5941e09cB4d198ca1e8E99cA</code>
+    <button class="btn" type="button" id="copy">Copy address</button>
+    <p class="todo">Only send USDC on Base (token contract 0x8335…2913). Payments sent on any other network or in any other token cannot be recovered. After paying, send your transaction hash and repo link to the contact below.</p>
+  </div>
 </header>
 
 <section>
@@ -169,5 +177,13 @@ MIT</pre>
 </footer>
 
 </div>
+<script>
+  document.getElementById('copy').addEventListener('click', function () {
+    var btn = this, addr = document.getElementById('addr');
+    function done(t) { btn.textContent = t; setTimeout(function () { btn.textContent = 'Copy address'; }, 1800); }
+    function fallback() { var r = document.createRange(); r.selectNodeContents(addr); var s = getSelection(); s.removeAllRanges(); s.addRange(r); done('Selected. Press Ctrl+C'); }
+    try { navigator.clipboard.writeText(addr.textContent.trim()).then(function () { done('Copied'); }, fallback); } catch (e) { fallback(); }
+  });
+</script>
 </body>
 </html>

@@ -59,3 +59,8 @@ claude, claude-ai, ai-skills, small-business, freelancer, solopreneur, client-on
 | Free competitor: Claude for Small Business (Anthropic) | $0 plugin (needs paid Claude plan) | https://www.anthropic.com/news/claude-for-small-business |
 | Its 15 skills listed | - | https://wotai.co/blog/claude-for-small-business |
 | Free review-reply template articles (many) | $0 | https://synup.com/learn/google-review-reply-templates |
+
+## Payment option: USDC on Base
+Buyers can also pay directly in USDC on the **Base** network to:
+`0xA973f9F3D582189D5941e09cB4d198ca1e8E99cA`
+Only USDC on Base (token contract `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`) is accepted. Funds sent on another network or in another token cannot be recovered. After paying, the buyer sends the tx hash to the seller contact (TODO-OWNER) and receives the zip.
