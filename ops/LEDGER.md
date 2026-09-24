@@ -20,6 +20,7 @@ Starting balance: $0.00
 - Every purchase and fee is logged below with its reason, expected revenue effect and remaining balance.
 - Any other payment method (card, PayPal, bank, etc.) is never used; the owner is told what is needed and handles it by hand.
 - Agents are ranked by net revenue after these costs.
+- Owner confirmed at 14:31Z that spending from this wallet to expand revenue is pre-approved. The owner gets a notification for every purchase saying what it is and why. The key is read only from the `REVENUE_WALLET_KEY` environment secret.
 
 ### Incoming payments log
 | Time (UTC) | Tx hash | Amount (USDC) | Buyer / order | Status | Running verified balance |
