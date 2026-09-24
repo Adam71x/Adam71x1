@@ -1,0 +1,40 @@
+      framework-cddbbc2a.js
+      vendor-ccb8af8a.js
+      main-92bac1ab.js
+
+WARNING in webpack performance recommendations: 
+You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
+For more info visit https://webpack.js.org/guides/code-splitting/
+
+client (webpack 5.111.1) compiled with 2 warnings in 3004 ms
+[Vista JS RSC] Running static generation...
+[vista:ssg] Found 1 routes eligible for static generation
+[vista:ssg] Generated 1 static pages
+[Vista JS RSC] Pre-rendered 1 page(s): /
+[Vista JS RSC] Wrote prerender-manifest.json
+
+╔══════════════════════════════════════════════════════════════╗
+║                    Build Complete! 🎉                        ║
+╚══════════════════════════════════════════════════════════════╝
+
+  Output directory: .vista/
+    ├── server/     (Server-side bundle - NEVER sent to client)
+    ├── static/     (Client assets - only client components)
+    └── cache/      (Build cache for faster rebuilds)
+
+
+Production build complete!
+
+[vista:deploy] Target: vercel
+[vista:deploy] Status: emitted
+[vista:deploy] Artifacts:
+  - <workdir>/deploy-bounty-app/.vercel/output
+  - <workdir>/deploy-bounty-app/.vercel/output/functions/index.func
+  - <workdir>/deploy-bounty-app/.vercel/output/static
+  - <workdir>/deploy-bounty-app/vercel.json
+[vista:deploy] Next steps:
+  - Vercel Build Output includes a Node.js serverless function that runs Flight SSR.
+  - Deploy with: vercel deploy --prebuilt --prod
+  - Connect the Git repo on Vercel; build command is "npm run build".
+  - Cold start spawns the Flight upstream in-process. Raise maxDuration in .vc-config.json if pages are slow.
+

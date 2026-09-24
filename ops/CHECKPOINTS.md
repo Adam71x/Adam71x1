@@ -24,3 +24,12 @@ Metrics per agent: minutes, actions, qualified buyer responses, paid commitments
 - A1 (bounties) scored lowest: 0 funded, unclaimed, fast bounties found. The channel is dominated by self-filed or crowded bounties. One unpaid fix (tscircuit/cli#4716) was prepared for the owner to decide on. REMOVED.
 - No agent has revenue or buyer interest; all are at 0. Selection used how complete each deliverable was and how solid its pricing evidence was, as a stand-in signal (not interest, not earnings). A2 ranked highest (tested product plus competitor prices of $9–$29).
 - A6 was created as a variation on A2 aimed at a different buyer: a skills pack for non-developer small businesses, with a demand search done first. The developer pack is not copied a second time.
+
+## Checkpoint 14:10Z — all agents finished; A3 kept, A6 kept
+Stand-in signal ranking (NOT interest, NOT earnings; every agent has 0 buyer responses and $0):
+1. A3 leads: the only agent that reached real, current, public buyer requests (Vista #62 fit 5/10; Omi $25 fit 4/10). Work is done and proposals are drafted. Blocked only on the owner deciding to post.
+2. A2 dev skills pack: tested and priced from evidence.
+3. A6 small-business pack: built, but a free Anthropic add-on overlaps 3 of its 5 skills.
+4. A5 grader funnel: built and hosted privately; brings traffic only if the owner posts.
+(A1 removed earlier; A4 retired once its job was done.)
+Decision: no new agents are spawned. Every channel is blocked by the same two things: (a) the egress proxy blocks buyer marketplaces (reddit, upwork, freelancer, HN, dev.to, gumroad) and chain explorers; (b) posting or listing needs the owner's accounts. More build-only agents would repeat the same untested work, which the brief warns against.
