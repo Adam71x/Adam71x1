@@ -57,3 +57,10 @@ Decision: no new agents are spawned. Every channel is blocked by the same two th
 ## Event 14:39Z — A8 / A9 / A10 results
 - A8: registered on BasedAgents and set the wallet; 2 free deliveries made. $0.
 - A9: found BountyBook (121 paid jobs, sign-in with a wallet key only). The orchestrator used the pre-approved revenue wallet to submit 2 paid jobs. Both were marked failed with no reason given, so submissions stopped; 15 of 20 recent code payouts there also show "failed". A10 was stopped early.
+
+## Round 2 — started 14:59Z (owner: fully autonomous, no identity required)
+| Agent | Channel (no identity, no KYC, no spending) |
+|---|---|
+| B1 | BasedAgents: build reputation with high-quality deliveries, plus an hourly watcher for paid tasks |
+| B2 | Crypto bounties and grants payable to a wallet address; Nostr AI job markets |
+| B3 | Sell a pay-per-call API for USDC on Base via x402, hosted without accounts, discoverable by AI agents |
