@@ -64,3 +64,7 @@ Decision: no new agents are spawned. Every channel is blocked by the same two th
 | B1 | BasedAgents: build reputation with high-quality deliveries, plus an hourly watcher for paid tasks |
 | B2 | Crypto bounties and grants payable to a wallet address; Nostr AI job markets |
 | B3 | Sell a pay-per-call API for USDC on Base via x402, hosted without accounts, discoverable by AI agents |
+
+## Round 3 — 15:10Z: real-money work, owner claims
+- The owner agreed: agents do bounty and freelance work, and the owner submits and gets paid under their own identity.
+- C1: Algora/Opire/IssueHunt/Polar code bounties. C2: GitHub-issue bounties (finish the $100 claude-builders hook first). C3: freelance hiring posts, work done in advance.
