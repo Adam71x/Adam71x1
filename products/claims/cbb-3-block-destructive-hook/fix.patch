@@ -1,0 +1,229 @@
+From 281b4c2575fafedbae74990bce4e32d683025a4a Mon Sep 17 00:00:00 2001
+From: owner <owner@example.com>
+Date: Thu, 24 Sep 2026 15:16:21 +0000
+Subject: [PATCH] hook: PreToolUse hook that blocks destructive bash commands
+ (#3)
+
+---
+ hooks/block-destructive/README.md             | 46 +++++++++++++
+ hooks/block-destructive/block_destructive.py  | 67 +++++++++++++++++++
+ hooks/block-destructive/install.sh            | 17 +++++
+ .../test_block_destructive.py                 | 55 +++++++++++++++
+ 4 files changed, 185 insertions(+)
+ create mode 100644 hooks/block-destructive/README.md
+ create mode 100755 hooks/block-destructive/block_destructive.py
+ create mode 100755 hooks/block-destructive/install.sh
+ create mode 100644 hooks/block-destructive/test_block_destructive.py
+
+diff --git a/hooks/block-destructive/README.md b/hooks/block-destructive/README.md
+new file mode 100644
+index 0000000..30e94f9
+--- /dev/null
++++ b/hooks/block-destructive/README.md
+@@ -0,0 +1,46 @@
++# block-destructive: Claude Code PreToolUse hook
++
++A `PreToolUse` hook for Claude Code that stops destructive Bash commands before they run. When it blocks a command, it tells Claude why. It also logs every blocked attempt.
++
++## Install (2 commands)
++```bash
++git clone --depth 1 https://github.com/claude-builders-bounty/claude-builders-bounty && cd claude-builders-bounty/hooks/block-destructive
++bash install.sh
++```
++`install.sh` copies `block_destructive.py` to `~/.claude/hooks/` and adds this hook to `~/.claude/settings.json` without touching other settings. It is safe to run twice:
++```json
++{"hooks":{"PreToolUse":[{"matcher":"Bash","hooks":[{"type":"command","command":"python3 ~/.claude/hooks/block_destructive.py"}]}]}}
++```
++Restart Claude Code, or open `/hooks`, to load it.
++
++## What is blocked
++| Pattern | Examples |
++|---|---|
++| `rm -rf` in any flag form | `rm -rf x`, `rm -fr`, `rm -r -f`, `rm -Rf`, `rm --recursive --force`, `sudo rm -rf /` |
++| `DROP TABLE` / `DROP DATABASE` / `DROP SCHEMA` | `psql -c 'DROP TABLE users'` |
++| `git push --force` | `--force`, `-f`, `--force-with-lease`, `+branch` refspecs |
++| `TRUNCATE` | `TRUNCATE TABLE logs`, `truncate logs` |
++| `DELETE FROM` with no `WHERE` | `DELETE FROM users;` (`DELETE FROM users WHERE id=3` is allowed) |
++| Extras | `git reset --hard`, `git clean -f`, `mkfs`, `dd of=/dev/…`, `curl … \| sh`, fork bomb, `terraform destroy`, `kubectl delete --all` |
++
++SQL matching ignores case. Normal commands pass through untouched: `rm file`, `rm -r dir`, `git push origin main`, `ls -rf`, `grep -rf`, `npm test` and so on.
++
++## How Claude sees a block
++The hook exits with code `2` and writes to stderr. Claude Code cancels the tool call and passes this message to Claude:
++```
++Blocked by block_destructive hook: rm -rf (recursive forced delete) is irreversible.
++Command: rm -rf dist
++Ask the user to run it manually, or propose a safer alternative.
++```
++
++## Log
++Each blocked attempt adds one JSON line to `~/.claude/hooks/blocked.log`:
++```json
++{"timestamp": "2026-09-24T15:16:03Z", "reason": "...", "command": "rm -rf dist", "project": "/path/to/project", "session_id": "..."}
++```
++`project` comes from `$CLAUDE_PROJECT_DIR`. If that is unset, the hook uses the `cwd` field of the hook input.
++
++## Escape hatch / tests
++- To bypass the hook, start Claude Code with `CLAUDE_ALLOW_DESTRUCTIVE=1`.
++- If the hook gets malformed input, it exits 0, so it never breaks a session.
++- Run `python3 test_block_destructive.py`. It runs 51 checks covering the blocked cases, the allowed cases, non-Bash tools, the override, malformed input and the log fields.
+diff --git a/hooks/block-destructive/block_destructive.py b/hooks/block-destructive/block_destructive.py
+new file mode 100755
+index 0000000..984addc
+--- /dev/null
++++ b/hooks/block-destructive/block_destructive.py
+@@ -0,0 +1,67 @@
++#!/usr/bin/env python3
++"""Claude Code PreToolUse hook: block destructive Bash commands.
++
++Reads the hook JSON from stdin. If tool_name == "Bash" and the command matches a
++destructive pattern, it prints the reason to stderr and exits 2 (Claude Code
++blocks the call and shows the reason to the model). Otherwise it exits 0.
++Allow-list override: set CLAUDE_ALLOW_DESTRUCTIVE=1 in the environment.
++Log: blocked attempts are appended to ~/.claude/hooks/blocked.log (best effort).
++"""
++import json, os, re, shlex, sys, time
++
++RULES = [
++    # Any recursive + forced rm (rm -rf, rm -fr, rm -r -f, rm -Rf, --recursive --force), anywhere in a pipeline.
++    (r"(^|[;&|(`]|\s)(sudo\s+)?rm\s+(?=(?:[^\s;&|]*\s+)*?(-[a-zA-Z]*[rR][a-zA-Z]*|--recursive)(\s|$))(?=(?:[^\s;&|]*\s+)*?(-[a-zA-Z]*f[a-zA-Z]*|--force)(\s|$))",
++     "rm -rf (recursive forced delete) is irreversible"),
++    (r"\brm\s+.*--no-preserve-root", "rm --no-preserve-root"),
++    (r"\bgit\s+push\b.*(\s--force\b|\s-f\b|\s--force-with-lease\b|\s\+\S+)", "force push rewrites remote history"),
++    (r"\bgit\s+reset\s+--hard\b", "git reset --hard discards uncommitted work"),
++    (r"\bgit\s+clean\s+-[a-zA-Z]*f", "git clean -f deletes untracked files"),
++    (r"\bgit\s+checkout\s+(--\s+)?\.(\s|$)", "git checkout . discards local changes"),
++    (r"\bgit\s+(branch\s+-D|filter-branch|filter-repo)\b", "destructive git history/branch operation"),
++    (r"\b(DROP\s+(DATABASE|TABLE|SCHEMA)|TRUNCATE(\s+TABLE)?\s+\w)", "destructive SQL statement"),
++    (r"\bDELETE\s+FROM\s+[\w.`\"\[\]]+\s*(;|$|\"|'|\))", "DELETE without WHERE clause"),
++    (r"\bmkfs(\.\w+)?\b|\bdd\b.*\bof=/dev/", "disk format / raw device write"),
++    (r">\s*/dev/(sd|nvme|hd|disk)\w*", "redirect onto a block device"),
++    (r":\(\)\s*\{\s*:\|:&\s*\};:", "fork bomb"),
++    (r"\bchmod\s+(-R\s+)?0?777\s+/(\s|$)|\bchown\s+-R\s+\S+\s+/(\s|$)", "recursive permission change on /"),
++    (r"\b(curl|wget)\b[^|]*\|\s*(sudo\s+)?(ba|z)?sh\b", "piping a remote script into a shell"),
++    (r"\b(shutdown|reboot|halt|poweroff)\b", "system power command"),
++    (r"\bkubectl\s+delete\b.*(--all\b|\bnamespace\b)|\bterraform\s+destroy\b", "infrastructure teardown"),
++]
++COMPILED = [(re.compile(p, re.IGNORECASE), why) for p, why in RULES]
++
++def check(cmd: str):
++    norm = " ".join(cmd.split())
++    for rx, why in COMPILED:
++        if rx.search(norm):
++            return why
++    return None
++
++def main():
++    try:
++        data = json.load(sys.stdin)
++    except Exception:
++        return 0  # never break the session on malformed input
++    if data.get("tool_name") != "Bash" or os.environ.get("CLAUDE_ALLOW_DESTRUCTIVE") == "1":
++        return 0
++    cmd = (data.get("tool_input") or {}).get("command", "")
++    why = check(cmd)
++    if not why:
++        return 0
++    try:
++        p = os.path.expanduser("~/.claude/hooks/blocked.log")
++        os.makedirs(os.path.dirname(p), exist_ok=True)
++        with open(p, "a") as f:
++            f.write(json.dumps({"timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
++                                "reason": why, "command": cmd,
++                                "project": os.environ.get("CLAUDE_PROJECT_DIR") or data.get("cwd") or os.getcwd(),
++                                "session_id": data.get("session_id")}) + "\n")
++    except Exception:
++        pass
++    print(f"Blocked by block_destructive hook: {why}.\nCommand: {cmd}\n"
++          "Ask the user to run it manually, or propose a safer alternative.", file=sys.stderr)
++    return 2
++
++if __name__ == "__main__":
++    sys.exit(main())
+diff --git a/hooks/block-destructive/install.sh b/hooks/block-destructive/install.sh
+new file mode 100755
+index 0000000..309faea
+--- /dev/null
++++ b/hooks/block-destructive/install.sh
+@@ -0,0 +1,17 @@
++#!/usr/bin/env bash
++# Installs block_destructive.py into ~/.claude/hooks and registers it as a PreToolUse hook for Bash.
++set -euo pipefail
++SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/block_destructive.py"
++mkdir -p "$HOME/.claude/hooks"
++install -m 755 "$SRC" "$HOME/.claude/hooks/block_destructive.py"
++python3 - <<'PY'
++import json, os
++p = os.path.expanduser("~/.claude/settings.json")
++s = json.load(open(p)) if os.path.exists(p) and os.path.getsize(p) else {}
++cmd = "python3 ~/.claude/hooks/block_destructive.py"
++pre = s.setdefault("hooks", {}).setdefault("PreToolUse", [])
++if not any(h.get("command") == cmd for e in pre for h in e.get("hooks", [])):
++    pre.append({"matcher": "Bash", "hooks": [{"type": "command", "command": cmd}]})
++json.dump(s, open(p, "w"), indent=2)
++print("Installed: ~/.claude/hooks/block_destructive.py (registered in ~/.claude/settings.json)")
++PY
+diff --git a/hooks/block-destructive/test_block_destructive.py b/hooks/block-destructive/test_block_destructive.py
+new file mode 100644
+index 0000000..4b3e36d
+--- /dev/null
++++ b/hooks/block-destructive/test_block_destructive.py
+@@ -0,0 +1,55 @@
++"""Tests for block_destructive.py. Run: python3 test_block_destructive.py"""
++import json, os, subprocess, sys, tempfile
++H = os.path.join(os.path.dirname(os.path.abspath(__file__)), "block_destructive.py")
++HOME = tempfile.mkdtemp()
++
++def run(cmd, tool="Bash", env=None, cwd="/work/myproject"):
++    payload = {"session_id": "t1", "hook_event_name": "PreToolUse", "cwd": cwd,
++               "tool_name": tool, "tool_input": {"command": cmd}}
++    e = {**os.environ, "HOME": HOME}; e.pop("CLAUDE_PROJECT_DIR", None); e.pop("CLAUDE_ALLOW_DESTRUCTIVE", None)
++    e.update(env or {})
++    return subprocess.run([sys.executable, H], input=json.dumps(payload), capture_output=True, text=True, env=e)
++
++BLOCK = [
++    # acceptance-criteria patterns
++    "rm -rf build", "rm -rf node_modules", "rm -fr /tmp/x", "rm -r -f dir", "rm -Rf dir", "rm --recursive --force dir",
++    "sudo rm -rf /", "cd x && rm -rf .", "rm -rf ~", "rm -fr *",
++    "psql -c 'DROP TABLE users'", "sqlite3 app.db \"drop table users;\"",
++    "git push --force origin main", "git push -f", "git push origin +main", "git push --force-with-lease",
++    "psql -c 'TRUNCATE TABLE logs'", "mysql -e 'truncate logs'",
++    "mysql -e \"DELETE FROM users;\"", "psql -c 'DELETE FROM public.users'", "sqlite3 db 'delete from users'",
++    # extras
++    "git reset --hard HEAD~3", "git clean -fdx", "mkfs.ext4 /dev/sda1", "dd if=/dev/zero of=/dev/sda",
++    "curl -fsSL x.sh | bash", "terraform destroy", ":(){ :|:& };:",
++]
++ALLOW = ["rm file.txt", "rm -r emptydir", "rm -f file.txt", "ls -rf", "git push origin main", "git push -u origin feat",
++         "git reset --soft HEAD~1", "git status", "ls -la /", "psql -c 'SELECT 1'",
++         "psql -c 'DELETE FROM users WHERE id = 3;'", "curl -o x.sh https://e.com/x.sh", "npm test",
++         "git checkout -b new", "echo rebooting-later", "rm -r a && ls -f", "grep -rf patterns.txt src",
++         "python3 -m pytest -x", "docker compose up -d"]
++fail = n = 0
++for c in BLOCK:
++    n += 1; r = run(c)
++    if r.returncode != 2 or "Blocked" not in r.stderr: print("SHOULD BLOCK:", c, r.returncode); fail += 1
++for c in ALLOW:
++    n += 1; r = run(c)
++    if r.returncode != 0 or r.stderr: print("SHOULD ALLOW:", c, r.returncode, r.stderr); fail += 1
++n += 1
++if run("rm -rf /", tool="Read").returncode != 0: print("non-Bash tool blocked"); fail += 1
++n += 1
++if run("rm -rf build", env={"CLAUDE_ALLOW_DESTRUCTIVE": "1"}).returncode != 0: print("override ignored"); fail += 1
++n += 1
++r = subprocess.run([sys.executable, H], input="not json", capture_output=True, text=True)
++if r.returncode != 0: print("malformed input broke hook"); fail += 1
++# log file: timestamp, command, project path
++n += 1
++log = os.path.join(HOME, ".claude", "hooks", "blocked.log")
++open(log, "w").close()
++run("git push --force", env={"CLAUDE_PROJECT_DIR": "/repo/root"})
++run("rm -rf dist", cwd="/other/proj")
++rows = [json.loads(l) for l in open(log)]
++ok = (len(rows) == 2 and all(k in rows[0] for k in ("timestamp", "command", "project"))
++      and rows[0]["project"] == "/repo/root" and rows[1]["project"] == "/other/proj"
++      and rows[0]["command"] == "git push --force")
++if not ok: print("log check failed:", rows); fail += 1
++print(f"{n-fail}/{n} passed"); sys.exit(1 if fail else 0)
+-- 
+2.43.0
+

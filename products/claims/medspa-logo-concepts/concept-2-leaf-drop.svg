@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="600" height="300">
+  <rect width="600" height="300" fill="#FFFFFF"/>
+  <g transform="translate(300,105)">
+    <path d="M0,-60 C30,-20 42,5 42,25 A42,42 0 0 1 -42,25 C-42,5 -30,-20 0,-60 Z" fill="#B7CBBF"/>
+    <path d="M0,62 L0,-20 M0,20 C12,8 22,4 30,4 M0,0 C-12,-12 -20,-14 -28,-14" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </g>
+  <text x="300" y="215" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-size="46" letter-spacing="3" fill="#2F3B35">Serene</text>
+  <text x="300" y="250" text-anchor="middle" font-family="'Montserrat', Arial, sans-serif" font-size="14" letter-spacing="8" fill="#8A9A90">MED SPA</text>
+</svg>
