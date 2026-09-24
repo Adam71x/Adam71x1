@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#23302A"/>
+  <circle cx="200" cy="200" r="150" fill="none" stroke="#D4B483" stroke-width="2"/>
+  <circle cx="200" cy="200" r="140" fill="none" stroke="#D4B483" stroke-width="0.8"/>
+  <text x="200" y="228" text-anchor="middle" font-family="Didot, 'Playfair Display', Georgia, serif" font-size="96" fill="#F4EDE2">S</text>
+  <path d="M150,245 Q200,265 250,245" stroke="#D4B483" stroke-width="2" fill="none"/>
+  <text x="200" y="115" text-anchor="middle" font-family="'Montserrat', Arial, sans-serif" font-size="16" letter-spacing="10" fill="#D4B483">SERENE</text>
+  <text x="200" y="300" text-anchor="middle" font-family="'Montserrat', Arial, sans-serif" font-size="12" letter-spacing="6" fill="#F4EDE2">MEDICAL SPA · EST. 2026</text>
+</svg>

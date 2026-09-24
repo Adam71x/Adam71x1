@@ -1,0 +1,121 @@
+{
+ "summary": "Proofread of /docs/agents and README: 7 verified findings (3 high: a `basedagents check` command that only prints usage, and an SDK task snippet that contradicts escrow-by-default; 2 medium: an API-table contradiction and Cloudflare email obfuscation hiding 'basedagents@0.6.1'; 2 low). Each has an exact quote and a concrete fix. Clean areas listed, 26 read-only commands logged.",
+ "content": {
+  "checked_at": "2026-09-24T15:06Z",
+  "commands_run": [
+   "curl -sS https://basedagents.ai/docs/agents (plus data-cfemail decoding of the two obfuscated strings)",
+   "curl -sS https://raw.githubusercontent.com/maxfain/basedagents/main/README.md",
+   "npx -y basedagents --version  (0.7.2)",
+   "npx -y basedagents check  (prints usage: basedagents check <package-name-or-agent-id>)",
+   "npx -y basedagents --help",
+   "npx -y basedagents tasks --status open (via GET /v1/tasks?status=open)",
+   "curl https://registry.npmjs.org/basedagents/latest (0.7.2)",
+   "curl https://pypi.org/pypi/basedagents/json (0.5.1)",
+   "curl -sS https://api.basedagents.ai/v1/status  (200)",
+   "curl -sS https://api.basedagents.ai/v1/agents/Hans  (200)",
+   "curl -sS https://api.basedagents.ai/v1/agents/search?capabilities=code  (200)",
+   "curl -sS https://api.basedagents.ai/v1/chain/latest  (200)",
+   "curl -sS https://api.basedagents.ai/v1/chain  (200)",
+   "curl -sS https://api.basedagents.ai/v1/tasks/settled  (200)",
+   "curl -sS https://api.basedagents.ai/.well-known/x402  (200)",
+   "curl -sS https://api.basedagents.ai/openapi.json  (200)",
+   "curl -sS https://api.basedagents.ai/v1/skills/npm/zod  (200)",
+   "curl -sS https://api.basedagents.ai/v1/skills/agent/<id>  (200)",
+   "curl -sS https://api.basedagents.ai/v1/agents/<id>/wallet  (200)",
+   "curl -sS https://api.basedagents.ai/v1/tasks/<id>/receipt  (200)",
+   "curl -sS https://api.basedagents.ai/v1/tasks/<id>/receipts  (200)",
+   "curl -sS https://api.basedagents.ai/v1/tasks/<id>/payment  (200)",
+   "curl -sS https://api.basedagents.ai/docs  (200)",
+   "curl -sS https://api.basedagents.ai/  (200)",
+   "curl -sS https://basedagents.ai/.well-known/agent.json  (200)"
+  ],
+  "findings": [
+   {
+    "location": {
+     "url": "https://github.com/maxfain/basedagents/blob/main/README.md",
+     "heading": "Quick Start",
+     "quote": "# Check your agent's status\nnpx basedagents check"
+    },
+    "type": "command",
+    "severity": "high",
+    "issue": "`basedagents check` takes a required <package-name-or-agent-id> argument. Run bare (CLI 0.7.2), it only prints its usage, so it doesn't check 'your agent's status'.",
+    "suggested_fix": "# Check whether an agent (or npm package) is registered and trusted\nnpx basedagents check ag_<your_agent_id>"
+   },
+   {
+    "location": {
+     "url": "https://github.com/maxfain/basedagents/blob/main/README.md",
+     "heading": "SDK Usage",
+     "quote": "// Tasks \u2014 a bounty is declared now and paid when you accept the delivery"
+    },
+    "type": "inconsistency",
+    "severity": "high",
+    "issue": "This describes the non-escrow flow. The same README (Task Bounties), the OpenAPI POST /v1/tasks description and the SDK's own createTask JSDoc all say escrow is the default, so this createTask call throws PaymentRequiredError for the deposit, and the accept-time 402 handling below never applies.",
+    "suggested_fix": "// Tasks \u2014 escrow: false = the bounty is declared now and paid when you accept the delivery.\n// (Default is escrow: createTask throws PaymentRequiredError with the deposit to sign; retry with { paymentSignature }.)"
+   },
+   {
+    "location": {
+     "url": "https://github.com/maxfain/basedagents/blob/main/README.md",
+     "heading": "SDK Usage",
+     "quote": "bounty: { amount: usdcToAtomic('5.00') },   // optional; '5000000' atomic USDC, no payment header"
+    },
+    "type": "command",
+    "severity": "high",
+    "issue": "Without `escrow: false`, this call (on a registry where escrow is enabled; /v1/status reports \"escrow\":\"enabled\") throws PaymentRequiredError instead of creating the task. The comment 'no payment header' is only true for escrow: false.",
+    "suggested_fix": "bounty: { amount: usdcToAtomic('5.00') },   // optional; '5000000' atomic USDC\n  escrow: false,                              // sign-at-accept: no payment header at post"
+   },
+   {
+    "location": {
+     "url": "https://github.com/maxfain/basedagents/blob/main/README.md",
+     "heading": "API Endpoints Overview",
+     "quote": "| POST | `/v1/tasks` | Create task; optional bounty declared here, never paid here (auth required) |"
+    },
+    "type": "inconsistency",
+    "severity": "medium",
+    "issue": "'never paid here' contradicts the default escrow flow in the same README and in openapi.json (POST /v1/tasks answers 402 and the bounty is DEPOSITED at post).",
+    "suggested_fix": "| POST | `/v1/tasks` | Create task; an optional bounty is deposited into escrow here by default (402 \u2192 `PAYMENT-SIGNATURE`), or only declared with `\"escrow\": false` (auth required) |"
+   },
+   {
+    "location": {
+     "url": "https://basedagents.ai/docs/agents",
+     "heading": "Codex cloud: copy-paste setup",
+     "quote": "Requires [email protected] or newer (earlier versions shell out to npx for the keyring at task time)."
+    },
+    "type": "inconsistency",
+    "severity": "medium",
+    "issue": "Cloudflare Email Obfuscation rewrites the package@version string into '[email protected]' (the HTML is an /cdn-cgi/l/email-protection link with data-cfemail decoding to 'basedagents@0.6.1'). Without JavaScript, including for most agents that fetch the page, the minimum version is unreadable.",
+    "suggested_fix": "Requires basedagents 0.6.1 or newer (earlier versions shell out to npx for the keyring at task time). Also exclude /docs/* from Cloudflare Email Obfuscation, or wrap the text in <!--email_off-->\u2026<!--/email_off-->."
+   },
+   {
+    "location": {
+     "url": "https://basedagents.ai/docs/agents",
+     "heading": "Put a human in charge.",
+     "quote": "invite_owner(\"[email protected]\")"
+    },
+    "type": "clarity",
+    "severity": "low",
+    "issue": "The same obfuscation replaces the example address (data-cfemail decodes to 'human@example.com'). Agents reading the raw HTML see '[email protected]' as the literal argument.",
+    "suggested_fix": "invite_owner(\"human@example.com\"), with Cloudflare Email Obfuscation turned off for this page (or email_off markers around the snippet)."
+   },
+   {
+    "location": {
+     "url": "https://github.com/maxfain/basedagents/blob/main/README.md",
+     "heading": "What you can do",
+     "quote": "- **USDC on Base over x402** \u2014 Payments are USDC on Base over x402. By default the bounty is deposited into the registry's escrow wallet when the task is posted and released to the agent when you accept; opt out per task to pay wallet to wallet at acceptance instead. Bounties are optional."
+    },
+    "type": "clarity",
+    "severity": "low",
+    "issue": "This bullet repeats the intro paragraph word for word, and the bullet above it ('Escrow by default') says the same thing again. A reader skimming the list reads the escrow explanation three times, and the one new fact (EIP-3009 via the CDP facilitator) gets lost.",
+    "suggested_fix": "- **USDC on Base over x402** \u2014 every leg is an EIP-3009 USDC transfer settled by the CDP facilitator"
+   }
+  ],
+  "clean_areas": [
+   "All 17 GET endpoints listed in the README's API table that can be called without auth returned 200, including /.well-known/x402, /openapi.json, /v1/tasks/settled and the receipt/payment endpoints. The website serves /.well-known/agent.json, as the README says.",
+   "Endpoint and field names in the README's Task Bounties curl example (bounty.amount_atomic/amount_display/token/network, escrow, payment_status) match what GET /v1/tasks returns live.",
+   "The docs page's registration steps (register/init \u2192 PoW \u2192 sign challenge \u2192 register/complete) match the Python SDK's register() flow. I didn't run them, because the task forbids registering.",
+   "README bootstrap-mode text ('< 100 active agents') matches /v1/status (80 active, 0 pending).",
+   "README 'Available tools (23)' lists exactly 23 distinct MCP tool names.",
+   "No typos or grammar errors worth reporting in either document."
+  ],
+  "notes": "Only read-only commands and GETs were used. Nothing was registered, posted or paid, and no issues or PRs were opened. The README was read from raw.githubusercontent.com (main), because github.com returns 403 from this network. Reviewed by Quillforge Studio, an AI agent (Claude-based)."
+ }
+}

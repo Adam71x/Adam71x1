@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>README Grader</title>
+<meta name="description" content="Free, offline README grader. Paste your Markdown README and get a 0-100 score with specific fixes. Nothing leaves your browser.">
+<style>
+  :root {
+    --bg: #fbfaf7; --surface: #ffffff; --text: #1d1d1f; --muted: #5d5d66;
+    --border: #e4e2dc; --accent: #2f5d50; --accent-ink: #ffffff; --code-bg: #f3f1ec;
+    --good: #2f7d4f; --mid: #a86b00; --bad: #b3261e; --track: #ebe8e1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141416; --surface: #1c1c1f; --text: #ececef; --muted: #a2a2ab;
+      --border: #2e2e33; --accent: #7fc4ae; --accent-ink: #0f1a16; --code-bg: #232327;
+      --good: #6fcf97; --mid: #e0b050; --bad: #f28b82; --track: #2e2e33;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141416; --surface: #1c1c1f; --text: #ececef; --muted: #a2a2ab;
+    --border: #2e2e33; --accent: #7fc4ae; --accent-ink: #0f1a16; --code-bg: #232327;
+    --good: #6fcf97; --mid: #e0b050; --bad: #f28b82; --track: #2e2e33;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+  header { padding: 40px 0 16px; }
+  .brand { font-weight: 700; letter-spacing: .02em; color: var(--accent); font-size: 14px; text-transform: uppercase; }
+  h1 { font-size: clamp(26px, 5.5vw, 38px); line-height: 1.15; margin: 10px 0 10px; }
+  p.lead { color: var(--muted); margin: 0 0 8px; max-width: 62ch; }
+  textarea { width: 100%; min-height: 260px; resize: vertical; background: var(--surface); color: var(--text);
+    border: 1px solid var(--border); border-radius: 10px; padding: 12px;
+    font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  textarea:focus-visible, .btn:focus-visible, .ghost:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 12px 0 24px; }
+  .btn { background: var(--accent); color: var(--accent-ink); padding: 10px 20px; border-radius: 8px;
+    font-weight: 600; border: 0; cursor: pointer; font-size: 16px; text-decoration: none; display: inline-block; }
+  .ghost { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 9px 16px;
+    border-radius: 8px; cursor: pointer; font-size: 15px; }
+  .hint { font-size: 13px; color: var(--muted); }
+  #result[hidden] { display: none; }
+  .scorebox { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+  .big { font-size: 56px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+  .big small { font-size: 20px; color: var(--muted); font-weight: 600; }
+  .grade { font-weight: 700; }
+  .bar { height: 10px; background: var(--track); border-radius: 99px; overflow: hidden; flex: 1 1 200px; min-width: 160px; }
+  .bar > span { display: block; height: 100%; border-radius: 99px; }
+  ul.checks { list-style: none; padding: 0; margin: 16px 0 0; }
+  ul.checks li { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 8px; }
+  .chead { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .cname { font-weight: 600; }
+  .cpts { font-variant-numeric: tabular-nums; font-size: 14px; color: var(--muted); white-space: nowrap; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+  .fix { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
+  .fix code, .cta code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+  .cta { margin: 24px 0; padding: 18px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); }
+  .cta h2 { margin: 0 0 6px; font-size: 20px; }
+  .cta p { margin: 0 0 12px; color: var(--muted); }
+  footer { padding: 24px 0 40px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); margin-top: 24px; }
+  footer a, .cta a.link { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">Quillforge Studio &middot; free tool</div>
+  <h1>README Grader</h1>
+  <p class="lead">Paste your README (Markdown). Get a 0&ndash;100 score across 12 concrete checks, each with a specific fix. Runs entirely in your browser: nothing is uploaded or stored.</p>
+</header>
+
+<main>
+  <label for="md" class="hint">README.md contents</label>
+  <textarea id="md" spellcheck="false" placeholder="# my-project&#10;&#10;One sentence on what it does and who it is for...&#10;&#10;## Install&#10;..."></textarea>
+  <div class="row">
+    <button class="btn" id="go" type="button">Grade my README</button>
+    <button class="ghost" id="sample" type="button">Try a sample</button>
+    <button class="ghost" id="clear" type="button">Clear</button>
+    <span class="hint">Tip: Ctrl/Cmd + Enter to grade.</span>
+  </div>
+
+  <section id="result" hidden aria-live="polite">
+    <div class="scorebox">
+      <div class="big"><span id="score">0</span><small>/100</small></div>
+      <div style="flex:1 1 220px">
+        <div class="grade" id="grade"></div>
+        <div class="bar" aria-hidden="true"><span id="barfill"></span></div>
+        <div class="hint" id="stats"></div>
+      </div>
+    </div>
+    <ul class="checks" id="checks"></ul>
+
+    <div class="cta">
+      <h2>Want it fixed for you?</h2>
+      <p>Quillforge Studio rewrites your README for a flat <strong>$29</strong>, back within 24 hours. Drafted with AI assistance, then checked by a person against your repo. One revision included.</p>
+      <a class="btn" href="../landing/index.html">See the $29 rewrite</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Free, no sign-up, works offline. Scores are heuristics, not a judgement of your project. This tool was built with AI assistance.
+  &middot; <a href="../landing/index.html">Quillforge Studio</a>
+</footer>
+</div>
+
+<script>
+/* ==GRADER-START== (pure function; extracted by test/run-tests.js) */
+function gradeReadme(md) {
+  md = String(md || '').replace(/\r\n?/g, '\n');
+  if (!md.trim()) return { score: 0, grade: 'Weak', words: 0, headings: 0, codeBlocks: 0, checks: [] };
+  var fences = md.match(/^(```|~~~)[^\n]*\n[\s\S]*?^\1\s*$/gm) || [];
+  var indentedCode = /(^|\n\n)((?: {4}|\t)[^\n]+\n?)+/.test(md);
+  var prose = md.replace(/^(```|~~~)[^\n]*\n[\s\S]*?^\1\s*$/gm, '\n');
+  var lines = prose.split('\n');
+  var headings = [];
+  lines.forEach(function (l, i) {
+    var m = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(l);
+    if (m) headings.push({ level: m[1].length, text: m[2].trim(), line: i });
+  });
+  // Setext headings (Title\n=====)
+  lines.forEach(function (l, i) {
+    if (i > 0 && lines[i - 1].trim() && /^=+\s*$/.test(l)) headings.push({ level: 1, text: lines[i - 1].trim(), line: i - 1 });
+    else if (i > 0 && lines[i - 1].trim() && /^-{3,}\s*$/.test(l) && !/^\s*[-*|]/.test(lines[i - 1])) headings.push({ level: 2, text: lines[i - 1].trim(), line: i - 1 });
+  });
+  headings.sort(function (a, b) { return a.line - b.line; });
+  var htmlH = prose.match(/<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/gi) || [];
+  htmlH.forEach(function (h) { var m = /<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/i.exec(h); headings.push({ level: +m[1], text: m[2].replace(/<[^>]+>/g, '').trim(), line: -1 }); });
+
+  var text = prose.replace(/<[^>]+>/g, ' ').replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1');
+  var words = (text.match(/[A-Za-z0-9][\w'-]*/g) || []).length;
+  var hasHeading = function (re) { return headings.some(function (h) { return re.test(h.text); }); };
+  var mdLinks = [];
+  var linkRe = /(!?)\[([^\]]*)\]\(\s*([^)\s]*)(?:\s+"[^"]*")?\s*\)/g, lm;
+  while ((lm = linkRe.exec(prose))) mdLinks.push({ img: !!lm[1], text: lm[2], url: lm[3] });
+  var htmlImgs = prose.match(/<img\b[^>]*>/gi) || [];
+
+  var checks = [];
+  function add(id, name, max, got, fix) {
+    got = Math.max(0, Math.min(max, Math.round(got)));
+    checks.push({ id: id, name: name, max: max, points: got, pass: got >= max, fix: got >= max ? '' : fix });
+  }
+
+  // 1. Title
+  var h1 = headings.filter(function (h) { return h.level === 1; });
+  add('title', 'Project title (single H1)', 8,
+    h1.length === 1 ? 8 : h1.length > 1 ? 5 : (headings.length ? 3 : 0),
+    h1.length > 1 ? 'Use exactly one top-level heading (<code># name</code>); demote the others to <code>##</code>.'
+      : 'Start the file with <code># project-name</code> so readers and GitHub know what they are looking at.');
+
+  // 2. Description
+  var firstPara = '';
+  var startLine = h1.length && h1[0].line >= 0 ? h1[0].line + 1 : 0;
+  var buf = [];
+  for (var i = startLine; i < lines.length; i++) {
+    var l = lines[i].trim();
+    if (/^#{1,6}\s/.test(l)) { if (buf.length) break; else if (i > startLine) break; else continue; }
+    if (!l || /^(=+|-{3,})$/.test(l)) { if (buf.length) break; continue; }
+    if (/^(\[!\[|!\[|<img|<p|<\/?div|<a\b|\[!)/i.test(l) && !buf.length) continue; // skip badge/logo lines
+    buf.push(l);
+  }
+  firstPara = buf.join(' ').replace(/<[^>]+>/g, '').replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1');
+  var descLen = firstPara.replace(/\s+/g, ' ').trim().length;
+  var todoDesc = /\b(todo|tbd|coming soon|wip)\b/i.test(firstPara);
+  add('description', 'Opening description', 12,
+    todoDesc ? 3 : descLen >= 80 ? 12 : descLen >= 40 ? 8 : descLen > 0 ? 4 : 0,
+    descLen === 0 ? 'Add a 1&ndash;3 sentence paragraph right under the title: what it does, who it is for, why it is different.'
+      : todoDesc ? 'Replace the TODO/placeholder in your opening paragraph with a real one-line pitch.'
+      : 'Your opening paragraph is thin (' + descLen + ' chars). Aim for 80+ characters that say what it does and for whom.');
+
+  // 3. Install
+  var instHead = hasHeading(/install|setup|set up|getting started|quick ?start|requirements/i);
+  var instCmd = /\b(npm (i|install)|yarn add|pnpm add|pip3? install|pipx install|cargo (add|install)|go (get|install)|gem install|brew install|apt(-get)? install|composer require|dotnet add|docker (run|pull)|git clone|conda install|poetry add|uv (add|pip))\b/i.test(md);
+  add('install', 'Installation instructions', 12,
+    (instHead ? 6 : 0) + (instCmd ? 6 : 0),
+    !instHead && !instCmd ? 'Add an <code>## Install</code> section with the exact command (e.g. <code>npm install x</code>, <code>pip install x</code>) and prerequisites/versions.'
+      : !instHead ? 'You have an install command but no heading for it. Put it under <code>## Install</code> so people can find it.'
+      : 'Your Install section has no copy-pasteable command. Add one in a fenced code block.');
+
+  // 4. Usage with code block
+  var usageHead = hasHeading(/usage|example|quick ?start|getting started|how to use|tutorial|demo|api/i);
+  var codeBlocks = fences.length + (indentedCode ? 1 : 0);
+  var langTagged = fences.filter(function (f) { return /^(```|~~~)\s*[\w+#.-]+/.test(f); }).length;
+  add('usage', 'Usage example with code block', 15,
+    (usageHead ? 6 : 0) + (codeBlocks >= 1 ? 6 : 0) + (codeBlocks >= 2 || langTagged >= 1 ? 3 : 0),
+    codeBlocks === 0 ? 'Add a <code>## Usage</code> section with a fenced code block (<code>```bash</code>) showing the smallest working example and its output.'
+      : !usageHead ? 'Put your example under a <code>## Usage</code> or <code>## Example</code> heading.'
+      : 'Add a language tag to fenced blocks (<code>```js</code>, <code>```bash</code>) for syntax highlighting, and show more than one example.');
+
+  // 5. Badges
+  var badge = /(shields\.io|badge\.fury|badgen\.net|\/badge\.svg|\/badges?\/|travis-ci|codecov\.io|circleci\.com.*svg|actions\/workflows\/[^)]*badge)/i.test(md);
+  add('badges', 'Status badges', 5, badge ? 5 : 0,
+    'Add 2&ndash;4 badges under the title (build status, version, license) from shields.io. They signal the project is maintained.');
+
+  // 6. License
+  var licHead = hasHeading(/licen[cs]e/i);
+  var licName = /\b(MIT|Apache[- ]2|GPL|LGPL|AGPL|BSD|MPL|ISC|Unlicense|CC[- ]BY|LICENSE(\.md|\.txt)?)\b/.test(md);
+  add('license', 'License', 8, (licHead ? 5 : 0) + (licName ? 3 : 0),
+    !licHead ? 'Add a <code>## License</code> section naming the license (e.g. "MIT &mdash; see LICENSE"). Many teams cannot use unlicensed code.'
+      : 'Name the actual license (MIT, Apache-2.0, GPL-3.0...) and link the LICENSE file.');
+
+  // 7. Contributing
+  var contrib = hasHeading(/contribut|development|hacking|support|issues/i) || /CONTRIBUTING(\.md)?/.test(md);
+  add('contributing', 'Contributing / support', 6, contrib ? 6 : 0,
+    'Add a short <code>## Contributing</code> section: how to report bugs, run tests locally, and open a PR (or link CONTRIBUTING.md).');
+
+  // 8. Screenshots / demo
+  var nonBadgeImgs = mdLinks.filter(function (x) { return x.img && !/shields\.io|badge|badgen|codecov|travis|\.svg\?/i.test(x.url); }).length
+    + htmlImgs.filter(function (t) { return !/shields\.io|badge|badgen/i.test(t); }).length;
+  var demoLink = /asciinema|\.gif\b|youtube\.com|youtu\.be|vimeo|loom\.com|demo/i.test(md);
+  add('visuals', 'Screenshot or demo', 6, nonBadgeImgs > 0 ? 6 : demoLink ? 4 : 0,
+    'Add a screenshot, GIF, or terminal recording (asciinema) near the top. A picture of the output answers "what does this do?" in one glance.');
+
+  // 9. Heading structure
+  var h2 = headings.filter(function (h) { return h.level === 2; }).length;
+  var skips = 0;
+  var md_heads = headings.filter(function (h) { return h.line >= 0; });
+  for (var k = 1; k < md_heads.length; k++) if (md_heads[k].level > md_heads[k - 1].level + 1) skips++;
+  var structPts = (h2 >= 4 ? 7 : h2 >= 2 ? 5 : h2 === 1 ? 2 : 0) + (skips === 0 && h2 > 0 ? 3 : skips === 1 ? 1 : 0);
+  add('structure', 'Heading structure', 10, structPts,
+    h2 < 2 ? 'Split the content into sections with <code>##</code> headings (Install, Usage, Configuration, Contributing, License).'
+      : skips ? 'Heading levels skip (e.g. <code>#</code> straight to <code>###</code>) ' + skips + ' time(s). Keep levels sequential for screen readers and the GitHub outline.'
+      : 'Aim for at least 4 <code>##</code> sections so readers can scan.');
+
+  // 10. Length
+  var lenPts = words < 50 ? 1 : words < 150 ? 4 : words <= 2500 ? 8 : words <= 5000 ? 6 : 4;
+  add('length', 'Length (' + words + ' words)', 8, lenPts,
+    words < 150 ? 'At ' + words + ' words it is too short to answer basic questions. Most good READMEs land between 300 and 1,500 words.'
+      : 'At ' + words + ' words it is long. Move reference material into a <code>docs/</code> folder and keep the README to the essentials.');
+
+  // 11. Broken-looking links
+  var bad = mdLinks.filter(function (x) {
+    var u = x.url;
+    return !u || u === '#' || /^(todo|tbd|link|url|here|xxx)$/i.test(u) || /localhost|127\.0\.0\.1|example\.com|your[-_]?(user|name|repo|org)|<[^>]*>|\s/i.test(u) || /^htp|^http:\/[^/]|^www\./i.test(u);
+  });
+  var emptyText = mdLinks.filter(function (x) { return !x.img && !x.text.trim(); }).length;
+  var clickHere = mdLinks.filter(function (x) { return !x.img && /^(click here|here|link|this)$/i.test(x.text.trim()); }).length;
+  var badCount = bad.length + emptyText;
+  add('links', 'Links look valid', 5, badCount === 0 ? (clickHere ? 4 : mdLinks.length || words >= 150 ? 5 : 3) : badCount === 1 ? 2 : 0,
+    !badCount && !clickHere ? 'No links found. Link to docs, the issue tracker, or a live demo so readers can go deeper.'
+      : badCount ? badCount + ' link(s) look broken or placeholder' + (bad.length ? ' (e.g. <code>' + (bad[0].url || '(empty)').replace(/</g, '&lt;') + '</code>)' : '') + '. Replace with real URLs; avoid localhost, example.com, and <code>#</code>.'
+      : 'Replace "click here" / "here" link text with descriptive text (better for accessibility and search).');
+
+  // 12. TOC for long docs
+  var isLong = words > 1200 || headings.length > 8;
+  var hasToc = hasHeading(/contents|table of contents|toc/i) || (prose.match(/\]\(#[\w-]+\)/g) || []).length >= 3;
+  add('toc', isLong ? 'Table of contents (long doc)' : 'Table of contents (not needed yet)', 5,
+    hasToc || (!isLong && words >= 150) ? 5 : !isLong ? 3 : 0,
+    !isLong ? 'Not needed yet at this length; once the README grows past ~1,200 words, add a <code>## Contents</code> list.' : 'Your README is long (' + words + ' words, ' + headings.length + ' headings). Add a <code>## Contents</code> list of anchor links near the top.');
+
+  var score = checks.reduce(function (s, c) { return s + c.points; }, 0);
+  var grade = score >= 85 ? 'Excellent' : score >= 70 ? 'Good' : score >= 50 ? 'Needs work' : 'Weak';
+  return { score: score, grade: grade, words: words, headings: headings.length, codeBlocks: codeBlocks, checks: checks };
+}
+/* ==GRADER-END== */
+
+(function () {
+  if (typeof document === 'undefined') return;
+  var $ = function (id) { return document.getElementById(id); };
+  var SAMPLE = '# tidewatch\n\ntool for tides. uses noaa api i think.\nrun main.py\n\nTODO write docs\n\nneeds python\n\n[docs](TODO)\n';
+  try { var saved = localStorage.getItem('rg-draft'); if (saved) $('md').value = saved; } catch (e) {}
+  function color(r) { return r >= 1 ? 'var(--good)' : r >= 0.5 ? 'var(--mid)' : 'var(--bad)'; }
+  function run() {
+    var md = $('md').value;
+    try { localStorage.setItem('rg-draft', md); } catch (e) {}
+    if (!md.trim()) { $('md').focus(); return; }
+    var r = gradeReadme(md);
+    $('score').textContent = r.score;
+    $('grade').textContent = r.grade;
+    $('grade').style.color = color(r.score / 85);
+    $('barfill').style.width = r.score + '%';
+    $('barfill').style.background = color(r.score / 85);
+    var failing = r.checks.filter(function (c) { return !c.pass; }).length;
+    $('stats').textContent = r.words + ' words · ' + r.headings + ' headings · ' + r.codeBlocks + ' code block(s) · ' + failing + ' thing(s) to fix';
+    var sorted = r.checks.slice().sort(function (a, b) { return (a.pass - b.pass) || ((b.max - b.points) - (a.max - a.points)); });
+    $('checks').innerHTML = sorted.map(function (c) {
+      return '<li><div class="chead"><span class="cname"><span class="dot" style="background:' + color(c.points / c.max) + '"></span>' +
+        c.name.replace(/</g, '&lt;') + '</span><span class="cpts">' + c.points + ' / ' + c.max + '</span></div>' +
+        (c.fix ? '<p class="fix">' + c.fix + '</p>' : '') + '</li>';
+    }).join('');
+    $('result').hidden = false;
+    $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  $('go').addEventListener('click', run);
+  $('sample').addEventListener('click', function () { $('md').value = SAMPLE; run(); });
+  $('clear').addEventListener('click', function () { $('md').value = ''; $('result').hidden = true; try { localStorage.removeItem('rg-draft'); } catch (e) {} });
+  $('md').addEventListener('keydown', function (e) { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') run(); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+Entrypoints:
+  main (272 KiB)
+      webpack-c6c2c6b5.js
+      framework-cddbbc2a.js
+      vendor-2a623ad8.js
+      main-92bac1ab.js
+
+WARNING in webpack performance recommendations: 
+You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
+For more info visit https://webpack.js.org/guides/code-splitting/
+
+client (webpack 5.111.1) compiled with 2 warnings in 3172 ms
+[Vista JS RSC] Running static generation...
+[vista:ssg] Found 1 routes eligible for static generation
+[vista:ssg] Generated 1 static pages
+[Vista JS RSC] Pre-rendered 1 page(s): /
+[Vista JS RSC] Wrote prerender-manifest.json
+
+╔══════════════════════════════════════════════════════════════╗
+║                    Build Complete! 🎉                        ║
+╚══════════════════════════════════════════════════════════════╝
+
+  Output directory: .vista/
+    ├── server/     (Server-side bundle - NEVER sent to client)
+    ├── static/     (Client assets - only client components)
+    └── cache/      (Build cache for faster rebuilds)
+
+
+Production build complete!
+[vista:deploy] Warning: Consider setting images.unoptimized: true in vista.config.ts for static hosts without /_vista/image optimization.
+
+[vista:deploy] Target: cloudflare
+[vista:deploy] Status: emitted
+[vista:deploy] Artifacts:
+  - <workdir>/deploy-bounty-app/.vista/deploy/cloudflare
+  - <workdir>/deploy-bounty-app/wrangler.toml
+[vista:deploy] Next steps:
+  - Static mode: Cloudflare Pages serves pre-rendered output.
+  - For Flight SSR, omit deploy.output "static" and use Cloudflare Containers.
+

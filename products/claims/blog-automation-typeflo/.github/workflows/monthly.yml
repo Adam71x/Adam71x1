@@ -1,0 +1,21 @@
+# Runs on the 1st of each month: reads titles.txt and schedules 2 posts/week on Typeflo.
+# Put your keys under repo Settings > Secrets > Actions.
+name: monthly-autoblog
+on:
+  schedule: [{ cron: "0 6 1 * *" }]
+  workflow_dispatch: {}
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python3 autoblog.py titles.txt
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TYPEFLO_ADMIN_URL: ${{ secrets.TYPEFLO_ADMIN_URL }}
+          TYPEFLO_ADMIN_KEY: ${{ secrets.TYPEFLO_ADMIN_KEY }}
+          IMGBB_API_KEY: ${{ secrets.IMGBB_API_KEY }}
+      - uses: actions/upload-artifact@v4
+        with: { name: run-log, path: out/ }

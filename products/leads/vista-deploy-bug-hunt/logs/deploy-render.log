@@ -1,0 +1,40 @@
+WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+Entrypoints:
+  main (272 KiB)
+      webpack-c6c2c6b5.js
+      framework-cddbbc2a.js
+      vendor-ccb8af8a.js
+      main-92bac1ab.js
+
+WARNING in webpack performance recommendations: 
+You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
+For more info visit https://webpack.js.org/guides/code-splitting/
+
+client (webpack 5.111.1) compiled with 2 warnings in 3609 ms
+[Vista JS RSC] Running static generation...
+[vista:ssg] Found 1 routes eligible for static generation
+[vista:ssg] Generated 1 static pages
+[Vista JS RSC] Pre-rendered 1 page(s): /
+[Vista JS RSC] Wrote prerender-manifest.json
+
+╔══════════════════════════════════════════════════════════════╗
+║                    Build Complete! 🎉                        ║
+╚══════════════════════════════════════════════════════════════╝
+
+  Output directory: .vista/
+    ├── server/     (Server-side bundle - NEVER sent to client)
+    ├── static/     (Client assets - only client components)
+    └── cache/      (Build cache for faster rebuilds)
+
+
+Production build complete!
+
+[vista:deploy] Target: render
+[vista:deploy] Status: emitted
+[vista:deploy] Artifacts:
+  - <workdir>/deploy-bounty-app/.vista/standalone/server.js
+  - <workdir>/deploy-bounty-app/render.yaml
+[vista:deploy] Next steps:
+  - Connect this repository on Render and select Blueprint (render.yaml).
+  - Or create a Web Service with buildCommand "npm run build" and startCommand "npm run start".
+

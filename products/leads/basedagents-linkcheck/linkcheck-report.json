@@ -1,0 +1,362 @@
+{
+  "checked_at": "2026-09-24T14:28:03+00:00",
+  "sources": {
+    "llms.txt": "https://basedagents.ai/llms.txt",
+    "docs/agents": "https://basedagents.ai/docs/agents",
+    "agent.json": "https://basedagents.ai/.well-known/agent.json"
+  },
+  "results": [
+    {
+      "url": "https://api.basedagents.ai",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 200,
+      "final_url": "https://api.basedagents.ai",
+      "result": "ok"
+    },
+    {
+      "url": "https://api.basedagents.ai/.well-known/x402",
+      "found_in": [
+        "agent.json",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://api.basedagents.ai/.well-known/x402",
+      "result": "ok"
+    },
+    {
+      "url": "https://api.basedagents.ai/docs",
+      "found_in": [
+        "agent.json",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://api.basedagents.ai/docs",
+      "result": "ok"
+    },
+    {
+      "url": "https://api.basedagents.ai/openapi.json",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://api.basedagents.ai/openapi.json",
+      "result": "ok"
+    },
+    {
+      "url": "https://api.basedagents.ai/v1/register/init",
+      "found_in": [
+        "llms.txt"
+      ],
+      "note": "llms.txt line 13 documents this as 'POST https://api.basedagents.ai/v1/register/init'. A GET returns 404 {\"error\":\"not_found\"} twice, which is expected, and OPTIONS returns 204. It was not POSTed, per the crawl rules. Not a defect. Optional clarity fix: mark it as POST-only so link checkers skip it.",
+      "status": 404,
+      "final_url": "https://api.basedagents.ai/v1/register/init",
+      "result": "template"
+    },
+    {
+      "url": "https://api.basedagents.ai/v1/tasks/settled",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://api.basedagents.ai/v1/tasks/settled",
+      "result": "ok"
+    },
+    {
+      "url": "https://app.basedagents.ai/start",
+      "found_in": [
+        "agent.json",
+        "docs/agents"
+      ],
+      "status": 200,
+      "final_url": "https://app.basedagents.ai/start",
+      "result": "ok"
+    },
+    {
+      "url": "https://app.basedagents.ai/tasks/new",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://app.basedagents.ai/tasks/new",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/",
+      "found_in": [
+        "docs/agents"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/.well-known/agent.json",
+      "found_in": [
+        "docs/agents",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/.well-known/agent.json",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/agents",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/agents",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/cdn-cgi/l/email-protection",
+      "found_in": [
+        "docs/agents"
+      ],
+      "note": "Cloudflare Email Obfuscation rewrites mailto: links to this path (class=__cf_email__, 2 occurrences). A direct GET returns 404 twice, but in a browser it decodes to a mailto on the client. Not a defect. Listed under skipped as a mailto.",
+      "status": 404,
+      "final_url": "https://basedagents.ai/cdn-cgi/l/email-protection",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/chain",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/chain",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/codex",
+      "found_in": [
+        "agent.json",
+        "docs/agents"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/codex",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/docs/agents",
+      "found_in": [
+        "docs/agents",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/docs/agents",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/docs/agents#sandboxes",
+      "found_in": [
+        "agent.json",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/docs/agents#sandboxes",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/docs/getting-started",
+      "found_in": [
+        "agent.json",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/docs/getting-started",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/keyring",
+      "found_in": [
+        "agent.json",
+        "docs/agents",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/keyring",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/llms-full.txt",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/llms-full.txt",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/register",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/register",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/registry",
+      "found_in": [
+        "docs/agents",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/registry",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/tasks",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/tasks",
+      "result": "ok"
+    },
+    {
+      "url": "https://basedagents.ai/whois?q=<name-or-id>",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": null,
+      "final_url": null,
+      "result": "template",
+      "note": "placeholder, not requested"
+    },
+    {
+      "url": "https://fonts.googleapis.com",
+      "found_in": [
+        "docs/agents"
+      ],
+      "note": "This is a <link rel=preconnect> origin hint, not a link. The bare origin returns 404 twice, which is expected. The real stylesheet URL fonts.googleapis.com/css2?... is a <link rel=stylesheet>. Not a defect.",
+      "status": 404,
+      "final_url": "https://fonts.googleapis.com",
+      "result": "ok"
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      "found_in": [
+        "docs/agents"
+      ],
+      "status": 200,
+      "final_url": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      "result": "ok"
+    },
+    {
+      "url": "https://fonts.gstatic.com",
+      "found_in": [
+        "docs/agents"
+      ],
+      "note": "This is a <link rel=preconnect crossorigin> origin hint, not a link. The bare origin returns 404, which is expected. Not a defect.",
+      "status": 404,
+      "final_url": "https://fonts.gstatic.com",
+      "result": "ok"
+    },
+    {
+      "url": "https://github.com/maxfain/basedagents",
+      "found_in": [
+        "agent.json"
+      ],
+      "note": "try1: HTTP 403; try2: HTTP 403 | 403 came from this checker's egress proxy (github.com / npmjs.com are proxy-restricted here), not from the site. Could not be verified from this network. Recommend a re-check from an open network.",
+      "status": 403,
+      "final_url": "https://github.com/maxfain/basedagents",
+      "result": "blocked"
+    },
+    {
+      "url": "https://github.com/maxfain/basedagents/blob/main/SANDBOX_SPEC.md",
+      "found_in": [
+        "agent.json",
+        "docs/agents"
+      ],
+      "note": "try1: HTTP 403; try2: HTTP 403 | 403 came from this checker's egress proxy (github.com / npmjs.com are proxy-restricted here), not from the site. Could not be verified from this network. Recommend a re-check from an open network.",
+      "status": 403,
+      "final_url": "https://github.com/maxfain/basedagents/blob/main/SANDBOX_SPEC.md",
+      "result": "blocked"
+    },
+    {
+      "url": "https://github.com/maxfain/basedagents/blob/main/SPEC.md",
+      "found_in": [
+        "llms.txt"
+      ],
+      "note": "try1: HTTP 403; try2: HTTP 403 | 403 came from this checker's egress proxy (github.com / npmjs.com are proxy-restricted here), not from the site. Could not be verified from this network. Recommend a re-check from an open network.",
+      "status": 403,
+      "final_url": "https://github.com/maxfain/basedagents/blob/main/SPEC.md",
+      "result": "blocked"
+    },
+    {
+      "url": "https://myagent.example.com/verify",
+      "found_in": [
+        "agent.json"
+      ],
+      "note": "This is an example.com placeholder in agent.json, reserved by RFC 2606. It is not meant to resolve.",
+      "status": null,
+      "final_url": "https://myagent.example.com/verify",
+      "result": "template"
+    },
+    {
+      "url": "https://www.npmjs.com/package/@basedagents/keyring",
+      "found_in": [
+        "agent.json"
+      ],
+      "note": "try1: HTTP 403; try2: HTTP 403 | 403 came from this checker's egress proxy (github.com / npmjs.com are proxy-restricted here), not from the site. Could not be verified from this network. Recommend a re-check from an open network.",
+      "status": 403,
+      "final_url": "https://www.npmjs.com/package/@basedagents/keyring",
+      "result": "blocked"
+    },
+    {
+      "url": "https://www.npmjs.com/package/@basedagents/mcp",
+      "found_in": [
+        "agent.json",
+        "llms.txt"
+      ],
+      "note": "try1: HTTP 403; try2: HTTP 403 | 403 came from this checker's egress proxy (github.com / npmjs.com are proxy-restricted here), not from the site. Could not be verified from this network. Recommend a re-check from an open network.",
+      "status": 403,
+      "final_url": "https://www.npmjs.com/package/@basedagents/mcp",
+      "result": "blocked"
+    },
+    {
+      "url": "https://www.npmjs.com/package/basedagents",
+      "found_in": [
+        "agent.json"
+      ],
+      "note": "try1: HTTP 403; try2: HTTP 403 | 403 came from this checker's egress proxy (github.com / npmjs.com are proxy-restricted here), not from the site. Could not be verified from this network. Recommend a re-check from an open network.",
+      "status": 403,
+      "final_url": "https://www.npmjs.com/package/basedagents",
+      "result": "blocked"
+    }
+  ],
+  "skipped": [
+    {
+      "value": "mailto (Cloudflare-obfuscated, 2x)",
+      "found_in": "docs/agents"
+    }
+  ],
+  "summary": {
+    "ok": 25,
+    "broken": 0,
+    "blocked": 6,
+    "template": 3
+  },
+  "commands_run": [
+    "python3 linkcheck.py (GET only, first hop, 1 req/s/host, 1 retry after 3s)",
+    "curl https://basedagents.ai/llms.txt | grep register/init",
+    "curl -X OPTIONS https://api.basedagents.ai/v1/register/init  (204)",
+    "curl https://api.basedagents.ai/v1/register/init  (GET 404 not_found)",
+    "curl https://basedagents.ai/docs/agents | grep preconnect/email-protection"
+  ],
+  "prepared_by": "Quillforge Studio (AI-assisted): generated and run by an AI agent, reviewed before delivery",
+  "conclusion": "No confirmed broken links. 0 broken. 6 URLs (github.com x3, npmjs.com x3) could not be verified from this network and are marked 'blocked'. 3 entries are placeholders or POST-only endpoints."
+}

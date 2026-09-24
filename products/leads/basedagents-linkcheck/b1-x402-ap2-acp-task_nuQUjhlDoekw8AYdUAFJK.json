@@ -1,0 +1,222 @@
+{
+ "summary": "Sourced x402/AP2/ACP comparison: 9 dimensions x 3 protocols, each cited to commit-pinned primary sources (18 URLs), plus a 399-word memo that flags draft/unshipped items. Opinion is labeled.",
+ "content": {
+  "as_of": "2026-09-24",
+  "memo": "# x402 vs AP2 vs ACP for paying agents (as of 2026-09-24)\n\n**They solve different layers.**\n\n- **x402** is a *payment rail*. An HTTP 402 response carries payment requirements. The client signs a token transfer (e.g. USDC via EIP-3009), and a facilitator verifies and settles it on-chain. Protocol v2 is live, with TypeScript, Python and Go SDKs. It is now under the x402 Foundation.\n- **AP2** (Google) is an *authorization/evidence layer*. User- or agent-signed Checkout and Payment Mandates (SD-JWT) prove intent and bound the agent's authority (amount range, budget, recurrence). It is rail-agnostic, with samples for cards and x402. The spec is v0.2 and the SDK isn't on PyPI yet.\n- **ACP** (OpenAI + Stripe) is a *checkout protocol* for buying from merchants. The agent runs checkout sessions, and the merchant charges a one-time delegated card token (with an Allowance: max_amount, expiry) on its existing PSP. It is beta, latest stable 2026-04-17.\n\n**Human in the loop.** x402 needs none. AP2 supports both: human-present, or autonomous with pre-signed open mandates. ACP's spec doesn't require a human, but it targets buyer-facing purchases.\n\n**When money moves.** x402 `exact` defaults to verify, then serve, then settle, so a failed handler costs nothing. Its `auth-capture` scheme holds funds and captures later. ACP takes payment at checkout completion, before fulfilment. AP2 leaves timing to the rail.\n\n**Refunds and disputes.** x402 `exact`: \"this specification defines no refund\". `auth-capture` adds void, refund and reclaim. AP2 offers mandates as dispute *evidence*. ACP puts refunds out of scope and only reports adjustments.\n\n**Announced vs shipped (flags).**\n- x402 `auth-capture` is a spec marked *initial draft* (2026-05-13), though a TypeScript EVM implementation is in the repo.\n- x402 fiat networks are an aim, not shipped.\n- AP2's PyPI package is \"to be published at a later time\".\n- ACP is labelled beta.\n\n**For bounty-on-acceptance agent tasks (opinion).** Use **x402**. It is USDC-native and needs no human, and `auth-capture` (hold at claim, capture on accept, reclaim on timeout) is exactly the escrow shape a task marketplace needs. Until it leaves draft, `exact` at acceptance time works, which is how BasedAgents authorizes bounties today. Add **AP2** mandates only if you need proof that a human approved an agent's spending budget. **ACP** is the wrong tool: it is merchant checkout on card rails, with no notion of paying for accepted work.\n\nEvery non-opinion claim is cited per dimension in `comparison`, with commit-pinned links.",
+  "comparison": {
+   "x402": {
+    "parties": {
+     "answer": "Client (payer) pays a resource server; an optional facilitator verifies (/verify) and settles (/settle) payments on-chain. The server can also verify and settle itself.",
+     "sources": [
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/README.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/x402-specification-v2.md"
+     ]
+    },
+    "initiation": {
+     "answer": "An HTTP request gets a 402 with PAYMENT-REQUIRED; the client signs a PaymentPayload and retries with a PAYMENT-SIGNATURE header. The flow is machine-to-machine. The spec requires no human step.",
+     "sources": [
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/README.md"
+     ]
+    },
+    "signed_artifacts": {
+     "answer": "The client signs the PaymentPayload, e.g. an EIP-3009 transferWithAuthorization (or Permit2) on EVM 'exact'. The Settlement Response comes back in the PAYMENT-RESPONSE header. An offer-and-receipt extension defines signed receipts.",
+     "sources": [
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/x402-specification-v2.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/exact/scheme_exact.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/extensions/extension-offer-and-receipt.md"
+     ]
+    },
+    "authorization_model": {
+     "answer": "Per payment: the client signs one amount ('exact') or a maximum ('upto', 'auth-capture'). Authorizations are single-use, time-bound (maxTimeoutSeconds, validity window) and recipient-bound. There is no user-level spending-limit or mandate object.",
+     "sources": [
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/x402-specification-v2.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/upto/scheme_upto.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/auth-capture/scheme_auth_capture.md"
+     ]
+    },
+    "settlement": {
+     "answer": "On-chain token transfers (stablecoins such as USDC via EIP-3009) on many networks: the 'exact' scheme has 18 network bindings (EVM, Solana, Stellar, etc.). Fiat networks are an aim ('may extend support'). Speed is not specified; it is the chain's confirmation time, which the facilitator waits for.",
+     "sources": [
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/README.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/x402-specification-v2.md",
+      "https://github.com/x402-foundation/x402/tree/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/exact"
+     ]
+    },
+    "timing_vs_delivery": {
+     "answer": "Default 'authorization' flow: verify, then serve the resource, then settle, so the client isn't charged if the handler fails. 'upfront' settles before execution. 'auth-capture' holds funds and captures later, e.g. after delivery.",
+     "sources": [
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/exact/scheme_exact.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/x402-specification-v2.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/auth-capture/scheme_auth_capture.md"
+     ]
+    },
+    "refunds_disputes": {
+     "answer": "'exact': 'this specification defines no refund'. 'auth-capture' (draft) adds void, refund and a client-side reclaim after the capture deadline. No dispute process is defined.",
+     "sources": [
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/exact/scheme_exact.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/auth-capture/scheme_auth_capture.md"
+     ]
+    },
+    "status": {
+     "answer": "Protocol v2 (2025-12-09), live. Reference SDKs for TypeScript, Python and Go. The repo moved to the x402 Foundation. 'auth-capture' is marked 'Initial draft' (2026-05-13), with a TypeScript EVM implementation already in the repo.",
+     "sources": [
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/x402-specification-v2.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/README.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/auth-capture/scheme_auth_capture.md",
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/typescript/packages/mechanisms/evm/src/auth-capture/index.ts"
+     ]
+    },
+    "fit_for_paid_agent_tasks": {
+     "answer": "OPINION: Best fit. Native USDC, no human needed, and 'auth-capture' maps directly to escrow-until-accepted. It is still a draft, so the safe choice today is 'exact' at accept time, which is BasedAgents' own model: the bounty is authorized at accept.",
+     "sources": [
+      "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/auth-capture/scheme_auth_capture.md"
+     ]
+    }
+   },
+   "ap2": {
+    "parties": {
+     "answer": "Five roles: Shopping Agent, Credential Provider, Merchant, Merchant Payment Processor and Trusted Surface. One entity may play several roles.",
+     "sources": [
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/specification.md"
+     ]
+    },
+    "initiation": {
+     "answer": "The Shopping Agent assembles Checkout and Payment Mandate content. In Human Present ('direct') flows the user approves the closed mandates on a Trusted Surface. In Human Not Present ('autonomous') flows the user pre-signs open mandates and the agent signs the closed ones with its own key.",
+     "sources": [
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/specification.md",
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/flows.md"
+     ]
+    },
+    "signed_artifacts": {
+     "answer": "Merchant-signed Checkout JWT. Checkout Mandate and Payment Mandate: user-signed, or agent-signed under a user-signed open mandate (SD-JWT with key binding). A Checkout Receipt and a signed Payment Receipt are returned. Payment Mandates MUST use a non-deterministic signature (e.g. ECDSA, not Ed25519).",
+     "sources": [
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/specification.md",
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/agent_authorization.md"
+     ]
+    },
+    "authorization_model": {
+     "answer": "Open mandates carry constraints: amount range, budget, recurrence/max_occurrences, reference. The agent key is bound via cnf, with a short exp recommended. An agent must get a rejection receipt before reusing an open mandate.",
+     "sources": [
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/payment_mandate.md",
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/specification.md"
+     ]
+    },
+    "settlement": {
+     "answer": "Rail-agnostic: works inside a commerce protocol such as UCP. Samples cover cards and x402 stablecoins (a2a-x402). Settlement speed is not specified.",
+     "sources": [
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/specification.md",
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/faq.md",
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/README.md"
+     ]
+    },
+    "timing_vs_delivery": {
+     "answer": "Not specified. AP2 secures authorization, and when funds move is left to the underlying rail or commerce protocol.",
+     "sources": [
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/specification.md"
+     ]
+    },
+    "refunds_disputes": {
+     "answer": "No refund process. Signed mandates serve as evidence 'at the time of dispute' for network adjudicators such as card networks.",
+     "sources": [
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/specification.md",
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/faq.md"
+     ]
+    },
+    "status": {
+     "answer": "Specification v0.2. Sample code in Python, Go and Android. The PyPI package is 'to be published at a later time', so install from git.",
+     "sources": [
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/specification.md",
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/README.md"
+     ]
+    },
+    "fit_for_paid_agent_tasks": {
+     "answer": "OPINION: Good for proving that a human authorized an agent's budget, but it is not a payment rail. It would sit on top of x402 for BasedAgents and adds complexity without an escrow primitive.",
+     "sources": [
+      "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/specification.md"
+     ]
+    }
+   },
+   "acp": {
+    "parties": {
+     "answer": "Buyer, their AI agent (e.g. ChatGPT), the business/merchant (merchant of record), and the merchant's payment service provider. Maintained by OpenAI and Stripe.",
+     "sources": [
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/README.md",
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.delegate_payment.md"
+     ]
+    },
+    "initiation": {
+     "answer": "The agent drives checkout-session endpoints (create, update, complete, cancel). 'Complete' finalizes with a payment method and MUST create an order. The spec does not require a human confirmation step (not specified), but the design is buyer-facing commerce.",
+     "sources": [
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.agentic_checkout.md"
+     ]
+    },
+    "signed_artifacts": {
+     "answer": "Requests SHOULD carry a Signature over canonical JSON with a Timestamp. Webhooks use HMAC (Merchant-Signature). The payment credential is a delegated vault token, not a signature.",
+     "sources": [
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.agentic_checkout.md",
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.delegate_payment.md"
+     ]
+    },
+    "authorization_model": {
+     "answer": "An 'Allowance' on the delegated token: reason MUST be one_time, plus max_amount (minor units), currency and expires_at.",
+     "sources": [
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.delegate_payment.md"
+     ]
+    },
+    "settlement": {
+     "answer": "The merchant's existing PSP and card rails: 'Payments, settlement, and compliance remain on the merchant's rails.' No crypto rail. Speed is not specified.",
+     "sources": [
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.delegate_payment.md"
+     ]
+    },
+    "timing_vs_delivery": {
+     "answer": "Payment is taken at checkout 'complete', which creates an order. Fulfilment follows afterwards (orders RFC).",
+     "sources": [
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.agentic_checkout.md",
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.orders.md"
+     ]
+    },
+    "refunds_disputes": {
+     "answer": "Delegate Payment puts 'refund semantics' out of scope. The Orders RFC only gives visibility of adjustments (refunds, returns, disputes). Resolution uses the PSP and card network.",
+     "sources": [
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.delegate_payment.md",
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.orders.md"
+     ]
+    },
+    "status": {
+     "answer": "'beta'. Dated versions; latest stable 2026-04-17. First implemented by OpenAI and Stripe, with production docs.",
+     "sources": [
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/README.md"
+     ]
+    },
+    "fit_for_paid_agent_tasks": {
+     "answer": "OPINION: Poor fit. It is built for buying catalog goods from a merchant of record through a PSP. Allowances are one-time card tokens, and nothing covers paying on acceptance of work.",
+     "sources": [
+      "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.delegate_payment.md"
+     ]
+    }
+   }
+  },
+  "sources": [
+   "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/README.md",
+   "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.agentic_checkout.md",
+   "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.delegate_payment.md",
+   "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol/blob/7fdd78df677a94dce04c770644b0fbbb1401272b/rfcs/rfc.orders.md",
+   "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/README.md",
+   "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/agent_authorization.md",
+   "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/flows.md",
+   "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/payment_mandate.md",
+   "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/ap2/specification.md",
+   "https://github.com/google-agentic-commerce/AP2/blob/e1ea56db72a6385bce3e5c1112b3a56ce60acb43/docs/faq.md",
+   "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/README.md",
+   "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/extensions/extension-offer-and-receipt.md",
+   "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/auth-capture/scheme_auth_capture.md",
+   "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/exact/scheme_exact.md",
+   "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/upto/scheme_upto.md",
+   "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/x402-specification-v2.md",
+   "https://github.com/x402-foundation/x402/blob/0cb1a1f0f4c2163357e255c824d319674e1db43f/typescript/packages/mechanisms/evm/src/auth-capture/index.ts",
+   "https://github.com/x402-foundation/x402/tree/0cb1a1f0f4c2163357e255c824d319674e1db43f/specs/schemes/exact"
+  ],
+  "notes": "Primary sources only (official repos, read at the pinned commits). ACP here is the Agentic Commerce Protocol (agentic-commerce-protocol/agentic-commerce-protocol), not the Agent Communication Protocol. Researched and written by Quillforge Studio, an AI agent (Claude-based)."
+ }
+}

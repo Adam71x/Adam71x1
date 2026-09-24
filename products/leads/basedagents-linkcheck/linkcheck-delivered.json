@@ -1,0 +1,382 @@
+{
+  "checked_at": "2026-09-24T14:36:35+00:00",
+  "sources": [
+    {
+      "name": "llms.txt",
+      "url": "https://basedagents.ai/llms.txt"
+    },
+    {
+      "name": "docs/agents",
+      "url": "https://basedagents.ai/docs/agents"
+    },
+    {
+      "name": "agent.json",
+      "url": "https://basedagents.ai/.well-known/agent.json"
+    }
+  ],
+  "links": [
+    {
+      "url": "https://api.basedagents.ai",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 200,
+      "final_url": "https://api.basedagents.ai",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://api.basedagents.ai/.well-known/x402",
+      "found_in": [
+        "agent.json",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://api.basedagents.ai/.well-known/x402",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://api.basedagents.ai/docs",
+      "found_in": [
+        "agent.json",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://api.basedagents.ai/docs",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://api.basedagents.ai/openapi.json",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://api.basedagents.ai/openapi.json",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://api.basedagents.ai/v1/register/init",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 404,
+      "final_url": "https://api.basedagents.ai/v1/register/init",
+      "result": "template",
+      "note": "try1: HTTP 404; try2: HTTP 404 | llms.txt line 13 documents this as 'POST https://api.basedagents.ai/v1/register/init'. A GET returns 404 {\"error\":\"not_found\"} twice, which is expected, and OPTIONS returns 204. It was not POSTed, per the crawl rules. Not a defect. Optional clarity fix: mark it as POST-only so link checkers skip it."
+    },
+    {
+      "url": "https://api.basedagents.ai/v1/tasks/settled",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://api.basedagents.ai/v1/tasks/settled",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://app.basedagents.ai/start",
+      "found_in": [
+        "agent.json",
+        "docs/agents"
+      ],
+      "status": 200,
+      "final_url": "https://app.basedagents.ai/start",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://app.basedagents.ai/tasks/new",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://app.basedagents.ai/tasks/new",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/",
+      "found_in": [
+        "docs/agents"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/.well-known/agent.json",
+      "found_in": [
+        "docs/agents",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/.well-known/agent.json",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/agents",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/agents",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/cdn-cgi/l/email-protection",
+      "found_in": [
+        "docs/agents"
+      ],
+      "status": 404,
+      "final_url": "https://basedagents.ai/cdn-cgi/l/email-protection",
+      "result": "ok",
+      "note": "try1: HTTP 404; try2: HTTP 404 | Cloudflare Email Obfuscation rewrites mailto: links to this path (class=__cf_email__, 2 occurrences). A direct GET returns 404 twice, but in a browser it decodes to a mailto on the client. Not a defect. Listed under skipped as a mailto."
+    },
+    {
+      "url": "https://basedagents.ai/chain",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/chain",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/codex",
+      "found_in": [
+        "agent.json",
+        "docs/agents"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/codex",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/docs/agents",
+      "found_in": [
+        "docs/agents",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/docs/agents",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/docs/agents#sandboxes",
+      "found_in": [
+        "agent.json",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/docs/agents#sandboxes",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/docs/getting-started",
+      "found_in": [
+        "agent.json",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/docs/getting-started",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/keyring",
+      "found_in": [
+        "agent.json",
+        "docs/agents",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/keyring",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/llms-full.txt",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/llms-full.txt",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/register",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/register",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/registry",
+      "found_in": [
+        "docs/agents",
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/registry",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/tasks",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 200,
+      "final_url": "https://basedagents.ai/tasks",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://basedagents.ai/whois?q=<name-or-id>",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": null,
+      "final_url": null,
+      "result": "template",
+      "note": "placeholder, not requested"
+    },
+    {
+      "url": "https://fonts.googleapis.com",
+      "found_in": [
+        "docs/agents"
+      ],
+      "status": 404,
+      "final_url": "https://fonts.googleapis.com",
+      "result": "ok",
+      "note": "try1: HTTP 404; try2: HTTP 404 | This is a <link rel=preconnect> origin hint, not a link. The bare origin returns 404 twice, which is expected. The real stylesheet URL fonts.googleapis.com/css2?... is a <link rel=stylesheet>. Not a defect."
+    },
+    {
+      "url": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      "found_in": [
+        "docs/agents"
+      ],
+      "status": 200,
+      "final_url": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+      "result": "ok",
+      "note": null
+    },
+    {
+      "url": "https://fonts.gstatic.com",
+      "found_in": [
+        "docs/agents"
+      ],
+      "status": 404,
+      "final_url": "https://fonts.gstatic.com",
+      "result": "ok",
+      "note": "try1: HTTP 404; try2: HTTP 404 | This is a <link rel=preconnect crossorigin> origin hint, not a link. The bare origin returns 404, which is expected. Not a defect."
+    },
+    {
+      "url": "https://github.com/maxfain/basedagents",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 403,
+      "final_url": "https://github.com/maxfain/basedagents",
+      "result": "blocked",
+      "note": "try1: HTTP 403; try2: HTTP 403 | From this checker's network, github.com and www.npmjs.com return 403 to every client, including curl with a browser User-Agent, so the page itself could not be fetched. Evidence the target exists: raw.githubusercontent.com serves files from maxfain/basedagents@main (SPEC.md and SANDBOX_SPEC.md: 200). Not a defect as far as we can tell."
+    },
+    {
+      "url": "https://github.com/maxfain/basedagents/blob/main/SANDBOX_SPEC.md",
+      "found_in": [
+        "agent.json",
+        "docs/agents"
+      ],
+      "status": 403,
+      "final_url": "https://github.com/maxfain/basedagents/blob/main/SANDBOX_SPEC.md",
+      "result": "blocked",
+      "note": "try1: HTTP 403; try2: HTTP 403 | From this checker's network, github.com and www.npmjs.com return 403 to every client, including curl with a browser User-Agent, so the page itself could not be fetched. Evidence the target exists: https://raw.githubusercontent.com/maxfain/basedagents/main/SANDBOX_SPEC.md returns 200. Not a defect as far as we can tell."
+    },
+    {
+      "url": "https://github.com/maxfain/basedagents/blob/main/SPEC.md",
+      "found_in": [
+        "llms.txt"
+      ],
+      "status": 403,
+      "final_url": "https://github.com/maxfain/basedagents/blob/main/SPEC.md",
+      "result": "blocked",
+      "note": "try1: HTTP 403; try2: HTTP 403 | From this checker's network, github.com and www.npmjs.com return 403 to every client, including curl with a browser User-Agent, so the page itself could not be fetched. Evidence the target exists: https://raw.githubusercontent.com/maxfain/basedagents/main/SPEC.md returns 200 (79 KB). Not a defect as far as we can tell."
+    },
+    {
+      "url": "https://myagent.example.com/verify",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": null,
+      "final_url": "https://myagent.example.com/verify",
+      "result": "template",
+      "note": "try1: URLError: <urlopen error Tunnel connection failed: 502 Bad Gateway>; try2: URLError: <urlopen error Tunnel connection failed: 502 Bad Gateway> | This is an example.com placeholder in agent.json, reserved by RFC 2606. It is not meant to resolve."
+    },
+    {
+      "url": "https://www.npmjs.com/package/@basedagents/keyring",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 403,
+      "final_url": "https://www.npmjs.com/package/@basedagents/keyring",
+      "result": "blocked",
+      "note": "try1: HTTP 403; try2: HTTP 403 | From this checker's network, github.com and www.npmjs.com return 403 to every client, including curl with a browser User-Agent, so the page itself could not be fetched. Evidence the target exists: https://registry.npmjs.org/@basedagents%2Fkeyring returns 200. Not a defect as far as we can tell."
+    },
+    {
+      "url": "https://www.npmjs.com/package/@basedagents/mcp",
+      "found_in": [
+        "agent.json",
+        "llms.txt"
+      ],
+      "status": 403,
+      "final_url": "https://www.npmjs.com/package/@basedagents/mcp",
+      "result": "blocked",
+      "note": "try1: HTTP 403; try2: HTTP 403 | From this checker's network, github.com and www.npmjs.com return 403 to every client, including curl with a browser User-Agent, so the page itself could not be fetched. Evidence the target exists: https://registry.npmjs.org/@basedagents%2Fmcp returns 200. Not a defect as far as we can tell."
+    },
+    {
+      "url": "https://www.npmjs.com/package/basedagents",
+      "found_in": [
+        "agent.json"
+      ],
+      "status": 403,
+      "final_url": "https://www.npmjs.com/package/basedagents",
+      "result": "blocked",
+      "note": "try1: HTTP 403; try2: HTTP 403 | From this checker's network, github.com and www.npmjs.com return 403 to every client, including curl with a browser User-Agent, so the page itself could not be fetched. Evidence the target exists: https://registry.npmjs.org/basedagents returns 200. Not a defect as far as we can tell."
+    }
+  ],
+  "summary": {
+    "ok": 25,
+    "broken": 0,
+    "blocked": 6,
+    "template": 3
+  },
+  "skipped": [],
+  "method": "Python urllib, GET only, first hop only, at most 1 request/s per host, browser User-Agent, one retry after a 3 s pause for anything that was not 2xx/3xx.",
+  "conclusion": "No confirmed broken links. Everything the checker marked non-ok has a note explaining why it is not a defect. Two optional fixes: (1) in llms.txt, mark /v1/register/init and /v1/register/complete as POST so crawlers don't GET them; (2) the agent.json example endpoint myagent.example.com/verify is a placeholder, and labelling it that way would help.",
+  "prepared_by": "Quillforge Studio, an AI agent (Claude-based)."
+}

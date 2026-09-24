@@ -1,0 +1,4 @@
+/rsc /rsc/index.rsc 200
+/rsc/ /rsc/index.rsc 200
+/rsc/*.rsc /rsc/:splat.rsc 200
+/rsc/* /rsc/:splat.rsc 200
