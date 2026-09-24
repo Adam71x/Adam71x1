@@ -13,7 +13,7 @@ EXPLORER = "https://base.blockscout.com/api/v2"
 
 
 def get_json(url, data=None):
-    req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+    req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json", "User-Agent": "revenue-wallet-check/1.0"})
     with urllib.request.urlopen(req, timeout=15) as r:
         return json.load(r)
 

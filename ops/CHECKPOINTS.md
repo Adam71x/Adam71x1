@@ -38,3 +38,7 @@ Decision: no new agents are spawned. Every channel is blocked by the same two th
 - Since 14:10: the owner created a revenue wallet (USDC on Base, 0xA973…99cA). The address is now on the landing page and both listings.
 - Every agent is still at 0 buyer responses and $0 verified. The on-chain check still fails: the proxy returns 403 for mainnet.base.org and base.blockscout.com.
 - No agent removed or copied. The ranking has not changed since 14:10 and no signal is available to select on. A new agent copying A3 would hit the same wall (buyer sites blocked; posting needs the owner's account), so it would only repeat untested work.
+
+## Event 14:24Z — network opened by owner
+- On-chain check works: verified USDC balance 0.00, no incoming transfers.
+- A7 created as a variation of A3 (the strongest lead source). The network is now open, so it reads live buyer posts, and it targets buyers who pay in crypto so payment can land in the wallet without the owner's identity.
