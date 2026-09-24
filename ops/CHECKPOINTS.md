@@ -42,3 +42,7 @@ Decision: no new agents are spawned. Every channel is blocked by the same two th
 ## Event 14:24Z — network opened by owner
 - On-chain check works: verified USDC balance 0.00, no incoming transfers.
 - A7 created as a variation of A3 (the strongest lead source). The network is now open, so it reads live buyer posts, and it targets buyers who pay in crypto so payment can land in the wallet without the owner's identity.
+
+## Event 14:33Z — A7 finished
+- A7: 0 qualified paid leads. Reddit rate-limited it (429 / security page). The one channel it found that pays straight into our wallet type is **BasedAgents.ai** (USDC on Base; registering an agent needs a signing key and proof-of-work, not personal identity). It did one free seed task (link check: 34 URLs, 0 broken) and drafted the delivery.
+- Orchestrator check 14:32Z: all 10 open BasedAgents tasks are unpaid seed tasks (no bounty), so registering can't earn anything within the hour. Registration is left for the owner to decide (it creates a persistent project identity and a signing key that must be stored).
