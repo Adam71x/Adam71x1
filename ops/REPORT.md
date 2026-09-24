@@ -11,6 +11,8 @@
 ## Agent results (ranked by net money, all $0. The tie is broken by a stand-in signal: how finished the work is and how close it sits to a live buyer. That is not buyer interest.)
 | Agent | Offer / channel | Runtime | Actions | Qualified buyer responses | Paid commitments | Verified $ net | Evidence |
 |---|---|---|---|---|---|---|---|
+| A8 | BasedAgents.ai (AI-agent task board, pays USDC on Base) | ~5 min | 38 | 0 (2 deliveries awaiting poster) | 0 | 0 | Registered "Quillforge Studio" (ag_7MmGK6…, disclosed AI, no personal info), payout wallet set, 2 free tasks delivered with receipts; `ops/agents/A8-basedagents.md` |
+| A9 + A10 | BountyBook (pays USDC on Base) and other agent boards | ~12 min | ~30 | 0 | 0 | 0 | 2 paid jobs ($1.50 + $2.00) submitted by the revenue wallet at 14:38 → both marked failed with no reason given; 15 of 20 past code payouts there show `failed`; `ops/agents/A9-agent-markets.md`, `A10-bountybook.md` |
 | A3 | Public buyer requests + spec work | ~12 min | ~45 | 0 (none contacted) | 0 | 0 | `products/leads/vista-deploy-bug-hunt` (5 findings), `omi-todotxt-recipe` (12 tests) |
 | A7 | Copy of A3: live network, crypto-paying buyers | ~5 min | ~24 | 0 | 0 | 0 | Found BasedAgents.ai (pays USDC on Base, needs no identity), all tasks there unpaid today; free link check done in `products/leads/basedagents-linkcheck` |
 | A2 | Claude Code skills pack for developers | ~5 min | 34 | 0 | 0 | 0 | `products/claude-skills-pack(.zip)`; competitors priced $9–$29 |
@@ -25,6 +27,7 @@ Per-agent reports: `ops/agents/*.md`. Timeline: `ops/CHECKPOINTS.md`. Money: `op
 - **14:00:** A4 retired (job done). **A5** added to turn its landing page into a funnel.
 - **14:05:** **A1 removed**: weakest signal (bounties are self-filed, bot-made or crowded). **A2 copied as A6** for a different buyer (small businesses instead of developers).
 - **14:10 / 14:20:** No copies. Every channel was blocked by the same two walls, so copies would have repeated untested work.
+- **14:33–14:38 (owner switched to full autonomy):** **A8** added (registered on BasedAgents). **A9** added (found BountyBook, with paid jobs). The orchestrator signed in to BountyBook with the pre-approved wallet key and submitted 2 paid jobs. Both failed, so **BountyBook submissions stopped** (reason hidden, unreliable payouts). A10 was stopped early.
 - **14:24:** Network opened. **A3 copied as A7** with live access and a crypto-paying target. It found the only rail that pays straight into the wallet (BasedAgents), but nothing is paid there today.
 
 ## Wallet and ledger
@@ -32,7 +35,11 @@ Per-agent reports: `ops/agents/*.md`. Timeline: `ops/CHECKPOINTS.md`. Money: `op
 - `REVENUE_WALLET_KEY` isn't set, so spending is impossible. Nothing was spent.
 - `python3 ops/check_wallet.py` checks the balance and incoming transfers on-chain.
 
-## Awaiting your decision
+## Autonomous channels now live (no action needed from you)
+- **BasedAgents.ai:** "Quillforge Studio" is registered and pays out to the revenue wallet. Two deliveries auto-accept in 7 days if the poster does nothing, but they are unpaid seed tasks. Its signing key is at `/root/.basedagents/keys/quillforge-studio-keypair.json`, only in this container, and is lost when the container is reclaimed.
+- **Revenue wallet:** accepts USDC on Base from any buyer, and `ops/check_wallet.py` verifies payments.
+
+## Awaiting your decision (optional; nothing below needs your identity except where noted)
 1. **Contact method:** add one to the landing page and listings. Buyers can pay now but can't send their tx hash or repo link to get their order.
 2. **Post A3's leads** (Vista #62 findings, Omi proposal) from your GitHub. Both disclose AI help. Ask Vista first whether it pays cash.
 3. **List the two skills packs** (Gumroad with PayPal payout, or USDC-only with the address already in `LISTING.md`). Fill in the TODO-OWNER seller field first.

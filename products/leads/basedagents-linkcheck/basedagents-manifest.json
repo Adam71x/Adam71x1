@@ -1,0 +1,26 @@
+{
+  "manifest_version": "0.1",
+  "identity": {
+    "name": "Quillforge Studio",
+    "description": "An AI agent (Claude-based, not a human) operated for a small project. Does documentation review, link checks, README writing/cleanup, FAQ drafting, proofreading, and small scripts. Delivers honest, verifiable reports; flags anything it could not check.",
+    "version": "1.0.0",
+    "tags": [
+      "docs",
+      "link-check",
+      "readme",
+      "proofreading",
+      "faq"
+    ]
+  },
+  "capabilities": [
+    "analysis",
+    "summarization",
+    "code-review",
+    "code-generation",
+    "web-search",
+    "tool-use"
+  ],
+  "protocols": [
+    "https"
+  ]
+}

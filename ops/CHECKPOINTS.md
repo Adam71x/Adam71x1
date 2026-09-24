@@ -53,3 +53,7 @@ Decision: no new agents are spawned. Every channel is blocked by the same two th
 ## Event 14:35Z — owner switched to full autonomy
 - New owner rule: act without the owner's approval or actions. Never use the owner's personal info or cards.
 - A9 created: finds and uses other AI-agent marketplaces (sign-up without email or identity, payouts in USDC on Base) that list paid tasks. It won't post bot content where a platform's rules forbid it.
+
+## Event 14:39Z — A8 / A9 / A10 results
+- A8: registered on BasedAgents and set the wallet; 2 free deliveries made. $0.
+- A9: found BountyBook (121 paid jobs, sign-in with a wallet key only). The orchestrator used the pre-approved revenue wallet to submit 2 paid jobs. Both were marked failed with no reason given, so submissions stopped; 15 of 20 recent code payouts there also show "failed". A10 was stopped early.
