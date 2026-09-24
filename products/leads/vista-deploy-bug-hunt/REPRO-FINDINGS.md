@@ -41,7 +41,7 @@ It comes from `writeStaticRscRedirects()` in `dist/deploy/utils.js:137-146`. Lin
   node_bundler = "none"
 ```
 Netlify documents `esbuild` and `zisi` (plus `nft` internally) for `node_bundler`. An unknown value may fail config validation or be silently ignored. If it's ignored, the default bundler runs, and it may not pick up the `.vista/standalone/server.js` that `ssr.js` loads with a dynamic `require(path.join(...))`. `included_files` is set, which helps. Please confirm against current Netlify docs before filing.
-*Orchestrator check 14:12Z:* secondary sources (netlify/cli#2191, Netlify's 2021 "new bundler" blog post, @netlify/config npm page) list only `esbuild` and `zisi`. None mention `"none"`. docs.netlify.com is blocked from this sandbox, so this is still **unconfirmed against the official docs**. Say so in the report if you file it before checking.
+*Orchestrator check 14:10Z:* secondary sources (netlify/cli#2191, Netlify's 2021 "new bundler" blog post, @netlify/config npm page) list only `esbuild` and `zisi`. None mention `"none"`. docs.netlify.com is blocked from this sandbox, so this is still **unconfirmed against the official docs**. Say so in the report if you file it before checking.
 **Suggested fix:** `node_bundler = "zisi"` (or `esbuild` together with `external_node_modules`), and keep `included_files`.
 
 ## F4. Cloudflare default (non-static) target always emits the Containers path (reproduced; listed failure mode)
