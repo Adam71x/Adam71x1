@@ -33,3 +33,8 @@ Stand-in signal ranking (NOT interest, NOT earnings; every agent has 0 buyer res
 4. A5 grader funnel: built and hosted privately; brings traffic only if the owner posts.
 (A1 removed earlier; A4 retired once its job was done.)
 Decision: no new agents are spawned. Every channel is blocked by the same two things: (a) the egress proxy blocks buyer marketplaces (reddit, upwork, freelancer, HN, dev.to, gumroad) and chain explorers; (b) posting or listing needs the owner's accounts. More build-only agents would repeat the same untested work, which the brief warns against.
+
+## Checkpoint 14:20Z (scheduled)
+- Since 14:10: the owner created a revenue wallet (USDC on Base, 0xA973…99cA). The address is now on the landing page and both listings.
+- Every agent is still at 0 buyer responses and $0 verified. The on-chain check still fails: the proxy returns 403 for mainnet.base.org and base.blockscout.com.
+- No agent removed or copied. The ranking has not changed since 14:10 and no signal is available to select on. A new agent copying A3 would hit the same wall (buyer sites blocked; posting needs the owner's account), so it would only repeat untested work.
