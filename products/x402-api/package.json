@@ -1,0 +1,20 @@
+{
+  "name": "x402-api",
+  "version": "1.0.0",
+  "description": "x402 pay-per-call README grader, USDC on Base",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "tunnel-lt": "node lt-client.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@x402/core": "^2.27.0",
+    "@x402/evm": "^2.27.0",
+    "@x402/express": "^2.27.0",
+    "express": "^5.2.1"
+  }
+}
