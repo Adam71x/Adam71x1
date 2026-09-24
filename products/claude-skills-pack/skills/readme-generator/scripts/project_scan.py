@@ -49,7 +49,8 @@ def read(path, limit=200_000):
 def walk(root, max_files=5000):
     count = 0
     for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith(".") or d in (".github",)]
+        dirnames[:] = [d for d in dirnames
+                       if d in (".github", ".circleci") or (d not in SKIP_DIRS and not d.startswith("."))]
         for fn in filenames:
             count += 1
             if count > max_files:

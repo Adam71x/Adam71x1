@@ -33,7 +33,7 @@ echo "## Commits ($(git rev-list --count "$mb"..HEAD))"
 git log --no-merges --format='- %h %s' "$mb"..HEAD
 echo
 echo "## Commit bodies (non-empty only)"
-git log --no-merges --format='%h%n%b' "$mb"..HEAD | awk 'NF' | head -80
+git log --no-merges --format='%h%x1f%b%x1e' "$mb"..HEAD | awk 'BEGIN{RS="\x1e"; FS="\x1f"} { b=$2; gsub(/^[ \n]+|[ \n]+$/, "", b); if (b != "") print "- " $1 ": " b }' | head -80
 echo
 echo "## Diffstat"
 git diff --stat=120 "$mb"...HEAD | tail -n 60

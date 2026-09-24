@@ -133,7 +133,8 @@ def main():
         print(f"### {sec}")
         for it in items:
             scope = f"**{it['scope']}**: " if it["scope"] else ""
-            prs = " " + " ".join(f"(#{p})" for p in it["prs"]) if it["prs"] else ""
+            missing = [p for p in it["prs"] if f"#{p}" not in it["description"]]
+            prs = " " + " ".join(f"(#{p})" for p in missing) if missing else ""
             print(f"- {scope}{it['description']}{prs}  <!-- {it['sha']} {it['author']} {it['date']} -->")
         print()
 
