@@ -1,0 +1,152 @@
+diff --git a/cli/build/generate-kicad-project.ts b/cli/build/generate-kicad-project.ts
+index e78ac93..76c939a 100644
+--- a/cli/build/generate-kicad-project.ts
++++ b/cli/build/generate-kicad-project.ts
+@@ -3,6 +3,7 @@ import path from "node:path"
+ import type { PlatformConfig } from "@tscircuit/props"
+ import {
+   CircuitJsonToKicadPcbConverter,
++  CircuitJsonToKicadProConverter,
+   CircuitJsonToKicadSchConverter,
+   resolveAndLoadKicad3dModelFiles,
+ } from "circuit-json-to-kicad"
+@@ -24,32 +25,52 @@ export type GeneratedKicadProject = {
+   projectName: string
+ }
+ 
+-const createKicadProContent = ({
++type PcbBoardDesignRules = {
++  type: "pcb_board"
++  min_board_edge_clearance?: number
++}
++
++/**
++ * Build the .kicad_pro content using circuit-json-to-kicad's project
++ * converter so board design rules declared on <board /> (minTraceWidth,
++ * via sizes, trace-to-pad clearance, ...) are carried into
++ * board.design_settings.rules instead of silently falling back to KiCad's
++ * defaults. The converter does not (yet) map minBoardEdgeClearance, so we
++ * map it to KiCad's min_copper_edge_clearance here.
++ */
++export const createKicadProContent = ({
++  circuitJson,
+   projectName,
+   schematicFileName,
+   boardFileName,
+ }: {
++  circuitJson: AnyCircuitElement[]
+   projectName: string
+   schematicFileName: string
+   boardFileName: string
+-}) =>
+-  JSON.stringify(
+-    {
+-      head: {
+-        version: 1,
+-        generator: "tsci",
+-      },
+-      project: {
+-        name: projectName,
+-        files: {
+-          schematic: schematicFileName,
+-          board: boardFileName,
+-        },
+-      },
+-    },
+-    null,
+-    2,
+-  )
++}): string => {
++  const proConverter = new CircuitJsonToKicadProConverter(circuitJson, {
++    projectName,
++    schematicFilename: schematicFileName,
++    pcbFilename: boardFileName,
++  })
++  proConverter.runUntilFinished()
++  const project = proConverter.getOutput() as any
++
++  const pcbBoard = circuitJson.find(
++    (el) => el.type === "pcb_board",
++  ) as PcbBoardDesignRules | undefined
++  const minBoardEdgeClearance = pcbBoard?.min_board_edge_clearance
++  if (typeof minBoardEdgeClearance === "number") {
++    project.board ??= {}
++    project.board.design_settings ??= {}
++    project.board.design_settings.rules ??= {}
++    project.board.design_settings.rules.min_copper_edge_clearance =
++      minBoardEdgeClearance
++  }
++
++  return `${JSON.stringify(project, null, 2)}\n`
++}
+ 
+ export const generateKicadProject = async ({
+   circuitJson,
+@@ -78,6 +99,7 @@ export const generateKicadProject = async ({
+   const projectFileName = `${sanitizedProjectName}.kicad_pro`
+ 
+   const proContent = createKicadProContent({
++    circuitJson: circuitJson as AnyCircuitElement[],
+     projectName: sanitizedProjectName,
+     schematicFileName,
+     boardFileName,
+diff --git a/tests/cli/build/build-kicad-project-design-rules.test.ts b/tests/cli/build/build-kicad-project-design-rules.test.ts
+new file mode 100644
+index 0000000..3ed8e37
+--- /dev/null
++++ b/tests/cli/build/build-kicad-project-design-rules.test.ts
+@@ -0,0 +1,54 @@
++import { test, expect } from "bun:test"
++import { createKicadProContent } from "../../../cli/build/generate-kicad-project"
++
++test("kicad_pro preserves <board /> design rules (issue #4716)", () => {
++  const circuitJson: any[] = [
++    {
++      type: "pcb_board",
++      pcb_board_id: "pcb_board_0",
++      center: { x: 0, y: 0 },
++      width: 20,
++      height: 20,
++      thickness: 1.6,
++      num_layers: 2,
++      material: "fr4",
++      min_trace_width: 0.15,
++      min_board_edge_clearance: 0.3,
++    },
++  ]
++
++  const pro = JSON.parse(
++    createKicadProContent({
++      circuitJson,
++      projectName: "rules",
++      schematicFileName: "rules.kicad_sch",
++      boardFileName: "rules.kicad_pcb",
++    }),
++  )
++
++  const rules = pro.board.design_settings.rules
++  expect(rules.min_track_width).toBe(0.15)
++  expect(rules.min_copper_edge_clearance).toBe(0.3)
++  expect(pro.board.last_opened_board).toBe("rules.kicad_pcb")
++  expect(pro.net_settings.classes[0].track_width).toBe(0.15)
++})
++
++test("kicad_pro omits min_copper_edge_clearance when not specified", () => {
++  const pro = JSON.parse(
++    createKicadProContent({
++      circuitJson: [
++        {
++          type: "pcb_board",
++          pcb_board_id: "pcb_board_0",
++          center: { x: 0, y: 0 },
++          width: 10,
++          height: 10,
++        } as any,
++      ],
++      projectName: "p",
++      schematicFileName: "p.kicad_sch",
++      boardFileName: "p.kicad_pcb",
++    }),
++  )
++  expect(pro.board.design_settings.rules.min_copper_edge_clearance).toBeUndefined()
++})
