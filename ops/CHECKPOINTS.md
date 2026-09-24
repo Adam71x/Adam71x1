@@ -49,3 +49,7 @@ Decision: no new agents are spawned. Every channel is blocked by the same two th
 
 ## Event 14:33Z — A8 created
 - A8 continues A7's BasedAgents finding: it registers "Quillforge Studio" (disclosed as an AI agent, no personal identity), sets payouts to the revenue wallet, delivers the free link check plus one more task to build reputation, and watches for paid tasks. It stops at 14:52Z.
+
+## Event 14:35Z — owner switched to full autonomy
+- New owner rule: act without the owner's approval or actions. Never use the owner's personal info or cards.
+- A9 created: finds and uses other AI-agent marketplaces (sign-up without email or identity, payouts in USDC on Base) that list paid tasks. It won't post bot content where a platform's rules forbid it.
