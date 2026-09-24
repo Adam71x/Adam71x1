@@ -1,3 +1,7 @@
 # Adam71x1
 
-- [SaaS idea: Rasmi, the operating system for the Saudi freelancer](docs/saas-idea.md)
+**Rasmi (رسمي):** a subscription SaaS for Saudi freelancers, studios and small agencies.
+
+- [Locked product plan](docs/product-plan.md): modules, the connected loop, subscription tiers
+- [Milestones](docs/milestones.md): build order (not started)
+- [Research brief](docs/saas-idea.md): market data, competitors, sources

@@ -1,6 +1,8 @@
 # Rasmi (رسمي): the operating system for the Saudi freelancer
 
-> Working name. A subscription SaaS for Saudi freelancers, small studios and small marketing agencies. It covers the full money cycle, **portfolio → lead → proposal → contract → delivery → invoice → payment → tax and reports**, with Saudi payment and compliance built in.
+> Working name. A subscription SaaS for Saudi freelancers, small studios and small marketing agencies. It covers the full money cycle, **portfolio → lead → proposal → contract → delivery → invoice → payment → tax and reports**, with Saudi compliance built in.
+
+> **Status:** this is the original research brief. The **locked product scope** is in [product-plan.md](product-plan.md) and the build order is in [milestones.md](milestones.md). Main change: Rasmi has **no payment gateway**. Clients pay freelancers outside Rasmi, and freelancers record those payments in Rasmi.
 
 Research date: **24 September 2026**. Every number below links to a source in the [Sources](#sources) section. Where data is missing or weak, this brief says so.
 
@@ -60,7 +62,7 @@ The alternatives each miss part of this:
 - portfolio page
 - client communication
 - proposals and contracts
-- payments into the freelancer's **own** mada-enabled gateway
+- invoicing and payment tracking for payments made outside Rasmi
 - ZATCA Phase-2 e-invoicing
 - freelance-document and VAT compliance
 
@@ -83,11 +85,11 @@ This does not prove none exists. Re-check before launch, and watch Delivvo close
 - Threaded chat, file delivery with versions, and **approve / request revision** buttons that keep an audit trail.
 - Notifications by email and WhatsApp (WhatsApp Business API).
 
-### Module 4: Get paid
-- Deposit, milestone and retainer invoices with payment links.
-- Payments go **directly to the freelancer's own Moyasar or Tap account**. Moyasar supports mada, Visa, Mastercard, Amex, Apple Pay and Samsung Pay [S15]. Moyasar and Tap are reported to accept a freelance document instead of a CR [S16]; confirm with each provider.
+### Module 4: Get paid (payments happen outside Rasmi)
+- Deposit, milestone and retainer invoices showing the freelancer's own payment details: IBAN, their own payment link, or STC Pay.
+- Clients pay **outside Rasmi**, for example by bank transfer or through the freelancer's own gateway such as Moyasar or Tap [S15][S16]. The freelancer records each payment with proof. The client can press "I've paid" and upload a receipt.
 - Automatic reminders and late-payment escalation.
-- **Rasmi never holds client funds.** This avoids operating escrow, which is a payments-regulated activity; confirm the model with SAMA or legal counsel.
+- **Rasmi never touches client money**, so there is no escrow and no payment licensing.
 
 ### Module 5: Compliance autopilot
 - Simplified invoices for everyone.
@@ -111,14 +113,9 @@ This does not prove none exists. Re-check before launch, and watch Delivvo close
 
 ## 5. Business model
 
-Subscription only, with **0% fee on payments**. That contrasts with the 15–20% marketplace commission [S10] and sits below the cheapest SME accounting plan (Wafeq, SAR 99/mo annual [S8]).
+Subscription only; Rasmi takes **no cut of client payments**. That contrasts with the 15–20% marketplace commission [S10] and sits below the cheapest SME accounting plan (Wafeq, SAR 99/mo annual [S8]).
 
-| Plan | Price (proposal, not market data) | For |
-|---|---|---|
-| Free | SAR 0 | Portfolio page + 3 invoices/month, Rasmi branding |
-| Pro | SAR 39/mo | Solo freelancer: unlimited proposals, contracts, portal, payment links |
-| Pro + ZATCA | SAR 79/mo | VAT-registered freelancer: Phase-2 e-invoicing |
-| Studio | SAR 199/mo (5 seats) | Small studio or agency: team, retainers, white-label |
+Locked tiers: **Free (SAR 0) · Pro (SAR 39/mo) · Growth (SAR 79/mo) · Studio (SAR 199/mo, 3 seats)**. The full feature matrix is in [product-plan.md](product-plan.md#4-subscription-tiers).
 
 These prices are hypotheses to test with the waitlist; they are not researched benchmarks.
 
@@ -135,20 +132,19 @@ These prices are hypotheses to test with the waitlist; they are not researched b
 - **Accounting players add freelancer workflows.** Mitigation: they serve SMEs; stay focused on the client-facing workflow.
 - **Target segment size is unverified.** Mitigation: interviews and a waitlist before a full build.
 - **Freelance documents are Saudi-only** [S5]. The core market is Saudi nationals plus studios and agencies with a CR.
-- **Gateway onboarding rules for freelance-document holders may change.** Mitigation: support several gateways (Moyasar, Tap).
 - **Regulatory exposure** (payments, PDPL, ZATCA solution requirements). Mitigation: never hold funds, host in KSA, and follow ZATCA technical guidelines.
 
 ## 8. Validation plan (before the full build)
 
 1. Landing page in Arabic plus a waitlist. Target 300 sign-ups from knowledge freelancers.
 2. 20–30 interviews to confirm the top pains: late payment, client chaos, ZATCA, portfolio.
-3. Concierge MVP: portfolio page + invoice + Moyasar payment link, with 10 paying users.
+3. Concierge MVP: portfolio page + Offer Link + invoice with payment recording, with 10 paying users.
 4. Then add the client portal, contracts and ZATCA Phase-2.
 
 ## 9. Suggested MVP stack (follow-up)
 
 - Next.js (RTL-ready) + PostgreSQL, hosted in a KSA region.
-- Moyasar and Tap APIs; WhatsApp Business API.
+- WhatsApp Business API; a gateway (e.g. Moyasar) **only for Rasmi's own subscription billing**, never for client payments.
 - A ZATCA Phase-2 SDK and implementation of ZATCA's technical guidelines.
 - File storage in KSA; audit log for approvals and contracts.
 
