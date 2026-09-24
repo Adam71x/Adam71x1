@@ -8,3 +8,4 @@
 - Metrics: ~12 min, 2 claims, 2 submissions, qualified buyer responses 0, paid commitments 0, verified money $0.00.
 - A10 (stopped early) solved 9 more jobs worth $22.50 in total; every one passes its own test_code locally. Files are in scratchpad and were not submitted.
 - 14:39:55Z: one diagnostic retry on job 64376d89 (csv_merge, $3.50) with a different output shape (a files list plus a filename key). It also reopened at once with no reason, so the output shape was not the cause. We now have 3 failed submissions on BountyBook. **Channel paused.** Retrying blind would only hurt reputation further.
+- 14:41Z check: every open research, content and data job (~20, $2.50–$7) comes from poster 0xcef19483, the same poster whose code payouts mostly fail. The "confirmed" find payouts are $0.01 each. Nothing on BountyBook worth pursuing this hour.
