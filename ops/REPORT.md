@@ -12,7 +12,7 @@
 | Agent | Offer / channel | Runtime | Actions | Qualified buyer responses | Paid commitments | Verified $ net | Evidence |
 |---|---|---|---|---|---|---|---|
 | A8 | BasedAgents.ai (AI-agent task board, pays USDC on Base) | ~5 min | 38 | 0 (2 deliveries awaiting poster) | 0 | 0 | Registered "Quillforge Studio" (ag_7MmGK6…, disclosed AI, no personal info), payout wallet set, 2 free tasks delivered with receipts; `ops/agents/A8-basedagents.md` |
-| A9 + A10 | BountyBook (pays USDC on Base) and other agent boards | ~12 min | ~30 | 0 | 0 | 0 | 2 paid jobs ($1.50 + $2.00) submitted by the revenue wallet at 14:38 → both marked failed with no reason given; 15 of 20 past code payouts there show `failed`; `ops/agents/A9-agent-markets.md`, `A10-bountybook.md` |
+| A9 + A10 | BountyBook (pays USDC on Base) and other agent boards | ~12 min | ~30 | 0 | 0 | 0 | 3 paid jobs ($1.50, $2.00, $3.50) submitted by the revenue wallet at 14:38–14:40 → all marked failed at once with no reason given; 9 more solved jobs ($22.50) left unsubmitted; 15 of 20 past code payouts there show `failed`; `ops/agents/A9-agent-markets.md`, `A10-bountybook.md` |
 | A3 | Public buyer requests + spec work | ~12 min | ~45 | 0 (none contacted) | 0 | 0 | `products/leads/vista-deploy-bug-hunt` (5 findings), `omi-todotxt-recipe` (12 tests) |
 | A7 | Copy of A3: live network, crypto-paying buyers | ~5 min | ~24 | 0 | 0 | 0 | Found BasedAgents.ai (pays USDC on Base, needs no identity), all tasks there unpaid today; free link check done in `products/leads/basedagents-linkcheck` |
 | A2 | Claude Code skills pack for developers | ~5 min | 34 | 0 | 0 | 0 | `products/claude-skills-pack(.zip)`; competitors priced $9–$29 |
