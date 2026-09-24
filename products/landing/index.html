@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quillforge Studio</title>
+<meta name="description" content="AI-assisted README and docs rewrite. $29 flat, delivered within 24 hours, human-reviewed.">
+<style>
+  :root {
+    --bg: #fbfaf7; --surface: #ffffff; --text: #1d1d1f; --muted: #5d5d66;
+    --border: #e4e2dc; --accent: #2f5d50; --accent-ink: #ffffff; --code-bg: #f3f1ec;
+    --warn-bg: #fff6e0; --warn-border: #e8c46a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141416; --surface: #1c1c1f; --text: #ececef; --muted: #a2a2ab;
+      --border: #2e2e33; --accent: #7fc4ae; --accent-ink: #0f1a16; --code-bg: #232327;
+      --warn-bg: #2b2513; --warn-border: #7a6224;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141416; --surface: #1c1c1f; --text: #ececef; --muted: #a2a2ab;
+    --border: #2e2e33; --accent: #7fc4ae; --accent-ink: #0f1a16; --code-bg: #232327;
+    --warn-bg: #2b2513; --warn-border: #7a6224;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+  header { padding: 56px 0 32px; }
+  .brand { font-weight: 700; letter-spacing: .02em; color: var(--accent); font-size: 14px; text-transform: uppercase; }
+  h1 { font-size: clamp(28px, 6vw, 44px); line-height: 1.15; margin: 12px 0 16px; }
+  h2 { font-size: 24px; margin: 0 0 12px; }
+  h3 { font-size: 16px; margin: 0 0 8px; }
+  p.lead { font-size: 18px; color: var(--muted); max-width: 60ch; margin: 0 0 24px; }
+  .price { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-bottom: 16px; }
+  .price strong { font-size: 32px; }
+  .btn {
+    display: inline-block; background: var(--accent); color: var(--accent-ink);
+    padding: 12px 22px; border-radius: 8px; font-weight: 600; text-decoration: none;
+    border: 0; cursor: pointer; font-size: 16px;
+  }
+  .btn[aria-disabled="true"] { opacity: .75; cursor: not-allowed; }
+  .todo { font-size: 13px; color: var(--muted); }
+  section { padding: 32px 0; border-top: 1px solid var(--border); }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  .notice { background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: 10px; padding: 16px 18px; }
+  .notice p { margin: 0; }
+  .ba { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .ba .label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 6px; }
+  pre {
+    margin: 0; background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px; font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: pre-wrap; word-break: break-word; overflow-x: auto;
+  }
+  ol, ul { padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  details { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; }
+  summary { cursor: pointer; font-weight: 600; }
+  footer { padding: 32px 0 48px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">Quillforge Studio</div>
+  <h1>Your README, rewritten so people actually use your project.</h1>
+  <p class="lead">AI-assisted README &amp; docs rewrite, reviewed by a human editor before delivery. One flat price, back to you within 24 hours.</p>
+  <div class="price">
+    <strong>$29 flat</strong>
+    <span>24h delivery &middot; 1 revision included</span>
+  </div>
+  <!-- TODO-OWNER: replace href="#" with the owner's real checkout link (e.g. Ko-fi commission, Payhip, Gumroad, PayPal invoice) and remove aria-disabled. -->
+  <a class="btn" href="#" aria-disabled="true" data-todo="TODO-OWNER" onclick="return false;">Order a rewrite &mdash; $29</a>
+  <p class="todo">TODO-OWNER: checkout not connected yet. No payment can be taken on this page.</p>
+</header>
+
+<section>
+  <div class="notice" role="note">
+    <p><strong>AI disclosure:</strong> drafts are produced with the help of AI language models, then checked and edited by a person against your repository before delivery. We do not claim the text is written by hand. Only code and docs you choose to share are used, and nothing is published on your behalf.</p>
+  </div>
+</section>
+
+<section>
+  <h2>What you get</h2>
+  <div class="grid">
+    <div class="card"><h3>Clear pitch</h3><p>A one-paragraph opening that says what the project does, who it is for, and why it exists.</p></div>
+    <div class="card"><h3>Working quickstart</h3><p>Install and first-run steps checked against your actual code, package files, and CLI flags.</p></div>
+    <div class="card"><h3>Structure</h3><p>Usage examples, configuration table, contributing and license sections, in a consistent order.</p></div>
+    <div class="card"><h3>Delivered as a file</h3><p>A Markdown file (or pull-request-ready diff) you review and merge yourself.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Before &amp; after</h2>
+  <p>Sample rewrite for <em>tidewatch</em>, a fictional command-line tool made up for this example.</p>
+  <div class="ba">
+    <div>
+      <div class="label">Before</div>
+<pre># tidewatch
+
+tool for tides. uses noaa api i think.
+run main.py
+
+TODO write docs
+
+needs python</pre>
+    </div>
+    <div>
+      <div class="label">After</div>
+<pre># tidewatch
+
+Check tide times for any coastal station from
+your terminal, with alerts before high water.
+
+## Install
+    pip install tidewatch   # Python 3.10+
+
+## Quickstart
+    tidewatch search "Monterey"
+    tidewatch today --station 9413450
+
+## Options
+| Flag        | Default | Description             |
+|-------------|---------|-------------------------|
+| --station   | none    | Station ID to query     |
+| --units     | ft      | ft or m                 |
+| --alert     | off     | Notify N min before high|
+
+## Data source
+Tide predictions come from a public tide API.
+Results are predictions, not measurements.
+
+## Contributing
+Issues and PRs welcome. See CONTRIBUTING.md.
+
+## License
+MIT</pre>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>How it works</h2>
+  <ol>
+    <li>Place your order and send a link to a public repo (or paste your current README and key files).</li>
+    <li>We draft with AI assistance, then a human checks every command and claim against your code.</li>
+    <li>Within 24 hours you receive the rewritten Markdown. One round of revisions is included.</li>
+  </ol>
+</section>
+
+<section>
+  <h2>Questions</h2>
+  <details><summary>Is this written by AI?</summary><p>Partly. AI produces the first draft; a person reviews, corrects, and edits it before it is sent to you.</p></details>
+  <details><summary>Do you need access to my private repo?</summary><p>No. You can paste the relevant files instead. We never ask for credentials or write access.</p></details>
+  <details><summary>What if the 24h deadline is missed?</summary><p>You get a full refund on request.</p></details>
+  <details><summary>What is not included?</summary><p>Full documentation sites, API reference generation, and translation are out of scope for the $29 offer.</p></details>
+</section>
+
+<footer>
+  Quillforge Studio &middot; AI-assisted, human-reviewed documentation.<br>
+  <!-- TODO-OWNER: add a contact method and refund/terms link before publishing. -->
+  Contact: TODO-OWNER
+</footer>
+
+</div>
+</body>
+</html>
