@@ -12,12 +12,16 @@ MS-01 planned a decision record for hosting in a KSA cloud region. The product o
 - The app runs fully on a developer machine: `npm run dev` uses the embedded PGlite database in `.data/`, and sign-in codes print in the terminal.
 - CI (GitHub Actions) only builds and tests. It deploys nothing.
 
+## Review preview (25 Sep 2026)
+
+The product owner asked for a link to review the work. A **preview** may run on a free host (Render, EU region) with a free Postgres database and Resend for sign-in emails. It holds **test data only** and is not the launch hosting described below. With Resend's test sender (`onboarding@resend.dev`), sign-in emails reach only the Resend account owner, so only the owner can sign in to the preview.
+
 ## When we host, these are required
 
 1. **Region and data residency:** host the app, database and file storage in a KSA region to meet the PDPL rules on transferring personal data outside the Kingdom.
-2. **Database:** managed PostgreSQL. Set `DATABASE_URL` and run `npm run db:migrate` before each release.
+2. **Database:** managed PostgreSQL. Set `DATABASE_URL`; migrations run on start-up.
 3. **Secrets:** a random `AUTH_SECRET` of at least 32 characters (the app refuses to start in production without it).
-4. **Email:** an email provider behind the `Mailer` interface in `src/lib/email` for sign-in codes.
+4. **Email:** Resend is supported (`EMAIL_TRANSPORT=resend`); a verified sending domain replaces the test sender.
 5. **Error tracking:** connect a provider inside `reportError()` in `src/lib/log.ts`.
 6. **Domains:** `rasmi.sa` for the app and wildcard `*.rasmi.sa` for portfolio pages (MS-03).
 7. **Backups and monitoring:** part of MS-12 hardening.

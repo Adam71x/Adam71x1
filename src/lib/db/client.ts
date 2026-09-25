@@ -13,7 +13,11 @@ async function createDb(): Promise<Db> {
   if (env.DATABASE_URL) {
     const { Pool } = await import('pg');
     const { drizzle } = await import('drizzle-orm/node-postgres');
-    return drizzle(new Pool({ connectionString: env.DATABASE_URL }), { schema }) as unknown as Db;
+    const { migrate } = await import('drizzle-orm/node-postgres/migrator');
+    const db = drizzle(new Pool({ connectionString: env.DATABASE_URL }), { schema });
+    // Applies pending migrations on start-up; already-applied ones are skipped.
+    await migrate(db, { migrationsFolder: MIGRATIONS });
+    return db as unknown as Db;
   }
   // No database server configured: use the embedded PGlite database on disk.
   const { PGlite } = await import('@electric-sql/pglite');

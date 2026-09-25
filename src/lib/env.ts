@@ -8,8 +8,10 @@ const schema = z.object({
   PGLITE_DIR: z.string().default('.data/pglite'),
   AUTH_SECRET: z.string().optional(),
   APP_URL: z.string().default('http://localhost:3000'),
-  EMAIL_TRANSPORT: z.enum(['console', 'file']).default('console'),
+  EMAIL_TRANSPORT: z.enum(['console', 'file', 'resend']).default('console'),
   MAILBOX_FILE: z.string().default('.data/mailbox.log'),
+  RESEND_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().default('Rasmi <onboarding@resend.dev>'),
 });
 
 export type Env = z.infer<typeof schema> & { AUTH_SECRET: string };
@@ -25,6 +27,8 @@ export function getEnv(): Env {
     ...process.env,
     DATABASE_URL: process.env.DATABASE_URL || undefined,
     AUTH_SECRET: process.env.AUTH_SECRET || undefined,
+    RESEND_API_KEY: process.env.RESEND_API_KEY || undefined,
+    EMAIL_FROM: process.env.EMAIL_FROM || undefined,
   });
   let secret = parsed.AUTH_SECRET;
   if (!secret || secret.length < 32) {
@@ -34,6 +38,9 @@ export function getEnv(): Env {
     if (secret)
       logger.warn('AUTH_SECRET is shorter than 32 characters; using it in development only.');
     secret ??= DEV_SECRET;
+  }
+  if (parsed.EMAIL_TRANSPORT === 'resend' && !parsed.RESEND_API_KEY) {
+    throw new Error('RESEND_API_KEY is required when EMAIL_TRANSPORT=resend.');
   }
   cached = { ...parsed, AUTH_SECRET: secret };
   return cached;

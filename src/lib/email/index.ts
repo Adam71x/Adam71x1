@@ -32,8 +32,34 @@ function fileMailer(file: string): Mailer {
   };
 }
 
+/** Sends through the Resend HTTP API (https://resend.com/docs/api-reference/emails/send-email). */
+export function resendMailer(
+  apiKey: string,
+  from: string,
+  fetchImpl: typeof fetch = fetch,
+): Mailer {
+  return {
+    async send(message) {
+      const response = await fetchImpl('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from,
+          to: [message.to],
+          subject: message.subject,
+          text: message.text,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`Resend rejected the email (${response.status}): ${await response.text()}`);
+      }
+    },
+  };
+}
+
 export function getMailer(): Mailer {
   const env = getEnv();
+  if (env.EMAIL_TRANSPORT === 'resend') return resendMailer(env.RESEND_API_KEY!, env.EMAIL_FROM);
   return env.EMAIL_TRANSPORT === 'file' ? fileMailer(env.MAILBOX_FILE) : consoleMailer;
 }
 

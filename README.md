@@ -16,7 +16,7 @@ npm run dev
 
 Open http://localhost:3000 and sign in with any email. There is no email service yet, so the 6-digit sign-in code is printed in the terminal running `npm run dev`. Data is stored in the embedded database in `.data/` (delete that folder to start over).
 
-To use a PostgreSQL server instead, copy `.env.example` to `.env.local`, set `DATABASE_URL`, and run `npm run db:migrate`.
+To use a PostgreSQL server instead, copy `.env.example` to `.env.local` and set `DATABASE_URL`; migrations run automatically when the app starts. To email sign-in codes, set `EMAIL_TRANSPORT=resend` and `RESEND_API_KEY`.
 
 ## Checks
 
