@@ -427,6 +427,11 @@ textarea {
   border-top: 1px solid var(--line);
   margin-top: 8px;
 }
+.me .grow > div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .av {
   width: 34px;
   height: 34px;
