@@ -2,7 +2,7 @@
 
 This file breaks the [locked product plan](product-plan.md) into small milestones that can each be built, reviewed and shipped on their own. **Module** references (M1–M12) point to [product-plan.md §2](product-plan.md#2-modules). Milestones are numbered **MS-xx** to keep them distinct from modules.
 
-**Status:** planned. No building has started. Each milestone gets its own branch and PR, and is reviewed before the next one starts.
+**Status:** MS-01 and MS-02 are built (see below). Hosting is deferred by decision ([0002](decisions/0002-hosting-deferred.md)); everything runs locally. Each milestone is reviewed before the next one starts.
 
 ## Overview
 
@@ -45,20 +45,22 @@ This file breaks the [locked product plan](product-plan.md) into small milestone
 
 ## Phase 0: Foundation
 
-### MS-01: Project skeleton and CI
+### MS-01: Project skeleton and CI · ✅ done
 - **Scope:**
   - Next.js + TypeScript monorepo, PostgreSQL + ORM migrations, linting, formatting, unit test runner, and CI on every PR.
   - Environment config and error tracking.
   - A decision record for hosting in a **KSA cloud region** (PDPL) and for object storage.
 - **Done when:** CI is green on an empty app; one command starts the app locally; the hosting decision is documented.
+- **Delivered:** Next.js 16 + TypeScript, Drizzle + PostgreSQL with committed migrations, embedded PGlite for local and tests, ESLint/Prettier/tsc/Vitest/Playwright, GitHub Actions CI, validated env config, `reportError()` + `onRequestError` hook. Hosting deferred ([0002](decisions/0002-hosting-deferred.md)); stack in [0001](decisions/0001-stack.md).
 
-### MS-02: Accounts, workspaces, bilingual shell
+### MS-02: Accounts, workspaces, bilingual shell · ✅ done
 - **Scope:**
   - Sign-up and login by email OTP.
   - Workspace (tenant) model with an owner role.
   - Arabic/English i18n with full RTL, and Hijri and Gregorian dates.
   - SAR currency formatting, a basic design system (colors, type, components) and the settings page.
 - **Done when:** a user can sign up, create a workspace, and switch language (the layout flips to RTL correctly); tenant isolation is covered by tests.
+- **Delivered:** email-code sign-in with rate limits, database sessions, onboarding (workspace name + page address), app shell (sidebar + mobile bottom bar), home, settings (profile, language, workspace), Arabic/English with RTL/LTR, SAR + Gregorian/Hijri formatting. 43 unit/integration tests and 8 end-to-end scenarios on desktop and mobile.
 
 ## Phase 1: MVP
 
